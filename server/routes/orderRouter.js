@@ -2,7 +2,6 @@ const { Router } = require('express');
 const { Order } = require('../models');
 const asyncHandler = require('../utils/async-handler');
 const { orderService } = require('../services');
-const { userInfo } = require('os');
 
 const router = Router();
 
@@ -39,40 +38,21 @@ router.post('/', asyncHandler(async (req, res) => {
     })
 }));
 
-// (서비스로옮겨야함)
-router.get('/:orderId', asyncHandler(async (req, res) => {
+// 주문번호로 검색
+router.get('/:orderId', asyncHandler(async (req, res, next) => {
     const orderId = req.params.orderId;
-    const order = await Order.findOne({ _id : orderId });
-    if(order){
-        res.status(200).json({
-            status:200,
-            msg:`주문번호 ${orderId} 검색결과 입니다`,
-            order,
-        })
-    }else{
-        res.status(404).json({
-            status:404,
-            msg:`해당하는 주문이 없습니다`
-        })
-    }
+    const order = await orderService.getOrder(orderId);
+    res.status(200).json({
+        status:200,
+        msg:`주문번호 ${orderId} 검색결과 입니다`,
+        order,
+    })
 }));
 
-// (서비스로옮겨야함)
-router.delete('/:orderId', asyncHandler(async (req, res) => {
+// 주문번호로 삭제
+router.delete('/:orderId', asyncHandler(async (req, res, next) => {
     const orderId = req.params.orderId;
-    const order = await Order.findOne({ _id : orderId });
-    if(!order){
-        res.status(404).json({
-            status:404,
-            msg:`해당하는 주문이 없습니다`,
-        });
-    }else if(order.status !== "상품준비중"){
-        res.status(403).json({
-            status:403,
-            msg:'배송이 완료된 경우 주문 취소가 불가능합니다. 관리자에게 문의해주세요',
-        })
-    }
-    await Order.deleteOne({ _id : orderId });
+    await orderService.deleteOrder(orderId);
     res.status(200).json({
         status:200,
         msg:"주문이 취소되었습니다."

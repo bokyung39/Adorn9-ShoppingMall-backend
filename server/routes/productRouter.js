@@ -20,8 +20,8 @@ router.get('/main', asyncHandler(async (req, res) => {
   res.send('main page');
 }));
 
-// 카테고리 + 페이지네이션. 요청 URI : GET ~~/api/v1/products/category?category=ring&page=1
-router.get('/category', asyncHandler(async (req, res) => {
+// 카테고리 + 페이지네이션. 요청 URI : GET ~~/api/v1/products/categories?category=ring&page=1
+router.get('/categories', asyncHandler(async (req, res) => {
   const { category, page } = req.query;
 
   const productList = await productService.getCategoryProductsPage(category ,page);
@@ -47,8 +47,8 @@ router.get('/:id', asyncHandler(async (req, res) => {
 }));
 
 // 카테고리로 검색. 요청 URI : GET ~~/api/v1/products/category/necklace
-router.get('/category/:category', asyncHandler(async (req, res) => {
-  const name = req.params.category;
+router.get('/categories/:categories', asyncHandler(async (req, res) => {
+  const name = req.params.categories;
 
   const categoryProducts = await productService.getCategoryProducts({ name });
 

@@ -14,9 +14,7 @@ class ProductService {
 
     // 전체 상품 조회
     async getProducts() {
-        const products = await Product.find({});
-
-        return products;
+        return await Product.find({});
     }
 
     // 카테고리 검색 결과에 페이지네이션 적용 
