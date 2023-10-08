@@ -1,6 +1,6 @@
 function errorHandler(error, req, res, next) {
-    res.status(400).json({ status: 400, msg: error.message });;
-  }
-  
-  module.exports = errorHandler;
-  
+  res.status(error.status || 500);
+  res.send(error.message || "Error")
+}
+
+module.exports = errorHandler;
