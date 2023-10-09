@@ -3,6 +3,7 @@ const { User } = require('../models');
 const local = require('./strategies/local');
 const kakao = require('./strategies/kakaoStrategy');
 const jwt = require('./strategies/jwt');
+const google = require('./strategies/google');
 module.exports = () => {
 
   // passport.serializeUser((user, done) => {
@@ -25,5 +26,6 @@ module.exports = () => {
   passport.use('local', local);
   passport.use(jwt);
   passport.use('kakao', kakao);
+  passport.use(google);
   
 }
