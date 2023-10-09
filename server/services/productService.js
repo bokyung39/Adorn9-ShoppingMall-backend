@@ -39,7 +39,7 @@ class ProductService {
     // 특정 상품 조회
     async getProductById(productId) {
         if(productId.length !== 24){
-            throw new Error('상품번호를 다시 확인해주세요');
+            throw new Error('잘못된 상품번호 입니다');
         }
         // 우선 해당 상품이 db에 존재하는지 확인
         const product = await this.Product.findOne({_id:productId});

@@ -15,11 +15,9 @@ const ProductSchema = new Schema({
     },
     images: String,
     detail: String,
+    maker: String,
     },
     {timestamps: true}
 );
 
 module.exports = { ProductSchema };
-
-// 추가로 카테고리 DB와의 연결 필요
-// stock기능 보류
