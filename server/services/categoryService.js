@@ -7,7 +7,7 @@ class CategoryService {
 
     // 전체 목록 조회
     async getCategories(){
-        return Category.find({});
+        return await Category.find({});
     }
 
     // 카테고리 추가
