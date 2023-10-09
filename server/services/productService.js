@@ -72,7 +72,9 @@ class ProductService {
             }));
         }
 
-        return categoryCollection;
+        const productList = await Product.find({ category:categoryCollection._id })
+
+        return productList;
     }
 }
 
