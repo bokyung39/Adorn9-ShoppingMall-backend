@@ -8,7 +8,7 @@ const check = (email, password) => {
   const emailRE = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
   const passRE = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/
 
-  //email은 @과 .을 사이에 포함
+  //email은 @과 .을 포함
   if(!emailRE.test(email)){
     throw new Error('올바른 이메일 형식으로 입력해주세요.')
   }
@@ -25,7 +25,6 @@ const local = new LocalStrategy({
   },
   async (useremail, password, done) => {
     try {
-      //formCheck.check(password,useremail);
       check(useremail, password);
       const user = await User.findOne({ email : useremail });
       console.log(user);

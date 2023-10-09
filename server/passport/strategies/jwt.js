@@ -4,7 +4,6 @@ const { secret } = require('../../utils/jwt');
 const cookieExtractor = (req,res) => {
   // req 의 cookies 에서 token 사용하기
   const { token } = req.cookies;
-  //console.log('hii');
  
   return token;
 };

@@ -25,7 +25,8 @@ module.exports = () => {
   // });
   passport.use('local', local);
   passport.use(jwt);
-  passport.use('kakao', kakao);
   passport.use(google);
+  //passport.use('kakao', kakao);
+
   
 }
