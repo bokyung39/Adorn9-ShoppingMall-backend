@@ -19,17 +19,6 @@ const UserSchema = new Schema({
     type:String,
     required:true
    }, // 유저 전화번호
-  address: {
-    type:String,
-    required:true
-   }, // 유저 주소
-  birth: {
-    type:Number,
-   }, //유저 생일
-   created_at:{
-    type:Date,
-    default:new Date().toDateString()
-   },//가입일자
    admin:{
     type:Boolean,
     default:false
