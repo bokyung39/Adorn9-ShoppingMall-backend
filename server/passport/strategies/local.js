@@ -10,7 +10,7 @@ const check = (email, password) => {
   //email은 @과 .을 포함
   if(!emailRE.test(email)){
     throw new Error('올바른 이메일 형식으로 입력해주세요.')
-  }
+  } 
   
   //비밀번호는 알파벳, 숫자, 특수문자가 모두 포함된 8~16자
   if(!passRE.test(password)){
