@@ -37,6 +37,9 @@ class OrderService {
 
     // 주문 검색
     async getOrder(orderId){
+        if(orderId.length !== 24){
+            throw new Error('주문번호를 다시 확인해주세요');
+        }
         const order = await Order.findOne({ _id : orderId });
         if(!order){
             throw new Error('해당하는 주문이 없습니다');
@@ -46,6 +49,9 @@ class OrderService {
 
     // 주문 삭제
     async deleteOrder(orderId){
+        if(orderId.length !== 24){
+            throw new Error('주문번호를 다시 확인해주세요');
+        }
         const order = await Order.findOne({ _id : orderId });
         if(!order){
             throw new Error('해당하는 주문이 없습니다');
@@ -56,6 +62,6 @@ class OrderService {
     }
 }
 
-const orderService = new OrderService(Product);
+const orderService = new OrderService(Order);
 
 module.exports = { orderService };

@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const { Order } = require('../models');
 const asyncHandler = require('../utils/async-handler');
 const { orderService } = require('../services');
 
@@ -25,6 +24,7 @@ const router = Router();
 }
 */
 
+// 주문 추가
 router.post('/', asyncHandler(async (req, res) => {
     const { name, items, address, phoneNumber } = req.body;
     
