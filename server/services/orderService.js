@@ -38,6 +38,7 @@ class OrderService {
     // 주문 검색
     async getOrder(orderId){
         if(orderId.length !== 24){
+
             throw new Error(JSON.stringify({
                 status: 400,
                 message: '잘못된 주문번호입니다'
