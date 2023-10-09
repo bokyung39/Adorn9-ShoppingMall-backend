@@ -12,6 +12,7 @@ const asyncHandler = require('../utils/async-handler');
 hashpassword: $2b$08$AN10tp5cY4O6kdE4i8a9DukYylAs0O/hoC5.VwPVy2WMIOk4mogtK
 */
 
+// 로그인
 router.post('/login', passport.authenticate('local', { session: false }), asyncHandler(async(req, res, next) => {
   //throw{status:400, message:"throw"};
   setUserToken(res, req.user);
@@ -25,26 +26,40 @@ router.post('/login', passport.authenticate('local', { session: false }), asyncH
   }
 }));
 
+// 구글 로그인
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
 router.get('/google/callback', passport.authenticate('google', { session: false }), asyncHandler(async (req, res) => {
   // 사용자 토큰 설정
   setUserToken(res, req.user);
-  // 로그인 후 리다이렉트할 경로를 설정
+  // 로그인 후 리다이렉트할 경로 설정
   res.redirect('/');
 }));
 
-// router.post('/login', (req, res, next) => {
-//   passport.authenticate('local', { session: false }, (err, user, info) => {
-//     if (err) {
-//       console.error('로그인 중 오류 발생:', err);
-//       return next(err); // 에러를 에러 핸들러로 넘김
-//     }
-//     setUserToken(res, req.user);
-//     res.status(200).json({ message: '로그인 성공' });
-//   })(req, res, next);
-// });
+// // 카카오 로그인 (미구현)
+// router.get('/kakao', passport.authenticate('kakao'));
+// router.get('/kakao/callback', passport.authenticate('kakao', {
+//   failureRedirect: '/', // kakaoStrategy에서 실패한다면 실행
+// }), asyncHandler(async (req, res) => {
+//   // 로그인 후 리다이렉트할 경로 설정
+//   res.redirect('/');
+// }));
 
+
+// router.get(
+//   "/kakao/callback",
+//   passport.authenticate("kakao", {
+//     failureRedirect: "/",
+//   }),
+//   (req, res) => {
+//     res.redirect("/");
+//   }
+// );
+
+
+
+
+
+// 로그아웃
 router.get('/logout', asyncHandler(async(req, res, next) => {
   try {
     // 쿠키를 삭제하기 위해 clearCookie() 메서드 사용
