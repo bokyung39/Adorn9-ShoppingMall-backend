@@ -50,7 +50,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 router.get('/categories/:categories', asyncHandler(async (req, res) => {
   const name = req.params.categories;
 
-  const categoryProducts = await productService.getCategoryProducts({ name });
+  const categoryProducts = await productService.getCategoryProducts(name);
 
   return res.status(200).json({
     status:200,

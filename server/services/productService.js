@@ -25,13 +25,18 @@ class ProductService {
         const categoryCollection = await Category.findOne({ name: category });
           
         if(!categoryCollection){
-            throw new Error("존재하지 않는 카테고리입니다.");
-            
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '존재하지 않는 카테고리입니다'
+            }));
         }
           
         const productList = await Product.find({ category:categoryCollection._id }, null, { skip: skipCount, limit: perPage})
         if(!productList){
-            throw new Error("상품이 존재하지 않습니다.");
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '상품이 존재하지 않습니다'
+            }));
         }
         return productList;
     }
@@ -39,12 +44,18 @@ class ProductService {
     // 특정 상품 조회
     async getProductById(productId) {
         if(productId.length !== 24){
-            throw new Error('상품번호를 다시 확인해주세요');
+            throw new Error(JSON.stringify({
+                status: 400,
+                message: '잘못된 상품번호 입니다'
+            }));
         }
         // 우선 해당 상품이 db에 존재하는지 확인
         const product = await this.Product.findOne({_id:productId});
         if (!product) {
-            throw new Error("상품이 존재하지 않습니다.");
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '상품이 존재하지 않습니다'
+            }));
         }
 
         return product;
@@ -55,10 +66,15 @@ class ProductService {
         const categoryCollection = await Category.findOne({ name: category });
 
         if(!categoryCollection){
-            throw new Error("존재하지 않는 카테고리입니다.");
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '존재하지 않는 카테고리입니다'
+            }));
         }
 
-        return categoryCollection;
+        const productList = await Product.find({ category:categoryCollection._id })
+
+        return productList;
     }
 }
 

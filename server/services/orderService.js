@@ -38,11 +38,18 @@ class OrderService {
     // 주문 검색
     async getOrder(orderId){
         if(orderId.length !== 24){
-            throw new Error('주문번호를 다시 확인해주세요');
+
+            throw new Error(JSON.stringify({
+                status: 400,
+                message: '잘못된 주문번호입니다'
+            }));
         }
         const order = await Order.findOne({ _id : orderId });
         if(!order){
-            throw new Error('해당하는 주문이 없습니다');
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '해당하는 주문이 없습니다'
+            }));
         }
         return order;
     }
@@ -50,13 +57,22 @@ class OrderService {
     // 주문 삭제
     async deleteOrder(orderId){
         if(orderId.length !== 24){
-            throw new Error('주문번호를 다시 확인해주세요');
+            throw new Error(JSON.stringify({
+                status: 400,
+                message: '잘못된 주문번호입니다'
+            }));
         }
         const order = await Order.findOne({ _id : orderId });
         if(!order){
-            throw new Error('해당하는 주문이 없습니다');
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '해당하는 주문이 없습니다'
+            }));
         }else if(order.status !== "상품준비중"){
-            throw new Error('배송이 완료된 경우 주문 취소가 불가능합니다. 관리자에게 문의해주세요');
+            throw new Error(JSON.stringify({
+                status: 403,
+                message: '배송이 완료된 경우 주문 취소가 불가능합니다. 관리자에게 문의해주세요'
+            }));
         }
         await Order.deleteOne({ _id : orderId });
     }

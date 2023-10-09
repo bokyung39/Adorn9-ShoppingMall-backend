@@ -5,11 +5,6 @@ const { orderService } = require('../services');
 const router = Router();
 
 // ~~/api/v1/orders
-// 장바구니에서 주문 후 결제완료되면 요청됨.
-// client에서 req.body로 {name, items, address, phoneNum} 을 넘겨준다고 가정
-// items는 배열. [ { item:Product참조타입, quantity:num }, {...}, {...} ] 과 같음
-// 주문상태의 경우 상품준비중, 배송준비중, 배송중, 배송완료 의 4단계를 생각중
-
 /* 임시로 작성한 프론트쪽 주문요청( api 테스트시 body에 넣고 테스트)
 {
     "name": "홍길동",

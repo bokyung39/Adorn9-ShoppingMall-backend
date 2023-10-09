@@ -3,11 +3,12 @@ const passport = require('passport');
 const { setUserToken } = require('../utils/jwt'); 
 const router = Router();
 const asyncHandler = require('../utils/async-handler');
+
 /*
 로그인 성공 데이터
 {
-  "email": "aaaaa@example.com",
-  "password": "1234!@asd56"
+  "email": "usera@example.com",
+  "password": "1234"
 }
 hashpassword: $2b$08$AN10tp5cY4O6kdE4i8a9DukYylAs0O/hoC5.VwPVy2WMIOk4mogtK
 */
@@ -35,30 +36,6 @@ router.get('/google/callback', passport.authenticate('google', { session: false 
   res.redirect('/');
 }));
 
-// // 카카오 로그인 (미구현)
-// router.get('/kakao', passport.authenticate('kakao'));
-// router.get('/kakao/callback', passport.authenticate('kakao', {
-//   failureRedirect: '/', // kakaoStrategy에서 실패한다면 실행
-// }), asyncHandler(async (req, res) => {
-//   // 로그인 후 리다이렉트할 경로 설정
-//   res.redirect('/');
-// }));
-
-
-// router.get(
-//   "/kakao/callback",
-//   passport.authenticate("kakao", {
-//     failureRedirect: "/",
-//   }),
-//   (req, res) => {
-//     res.redirect("/");
-//   }
-// );
-
-
-
-
-
 // 로그아웃
 router.get('/logout', asyncHandler(async(req, res, next) => {
   try {
@@ -72,5 +49,26 @@ router.get('/logout', asyncHandler(async(req, res, next) => {
     next(error);
   }
 }));
+
+/*
+// 카카오 로그인 (미구현)
+router.get('/kakao', passport.authenticate('kakao'));
+router.get('/kakao/callback', passport.authenticate('kakao', {
+  failureRedirect: '/', // kakaoStrategy에서 실패한다면 실행
+}), asyncHandler(async (req, res) => {
+  // 로그인 후 리다이렉트할 경로 설정
+  res.redirect('/');
+}));
+
+router.get(
+  "/kakao/callback",
+  passport.authenticate("kakao", {
+    failureRedirect: "/",
+  }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+*/
 
 module.exports = router;
