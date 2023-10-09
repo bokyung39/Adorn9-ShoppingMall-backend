@@ -14,7 +14,10 @@ class CategoryService {
     async addCategories(name){
         const check = await Category.find({ name });
         if(check.length !== 0){
-            throw new Error('이미 존재하는 카테고리명입니다');
+            throw new Error(JSON.stringify({
+                status: 400,
+                message: '이미 존재하는 카테고리명입니다'
+            }));
         }
         
         await Category.create({ name });
@@ -25,13 +28,19 @@ class CategoryService {
     // 카테고리 수정
     async setCategories(id, name){
         if(id.length !== 24){
-            throw new Error('잘못된 카테고리ID 입니다');
+            throw new Error(JSON.stringify({
+                status: 400,
+                message: '잘못된 카테고리ID 입니다'
+            }));
         }
         
         const category = await Category.find({ _id:id });
         
         if(!category){
-            throw new Error('존재하지 않는 카테고리ID 입니다');
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '존재하지 않는 카테고리ID 입니다'
+            }));
         }
 
         await Category.updateOne({ _id:id },{ name });
@@ -42,13 +51,19 @@ class CategoryService {
     // 카테고리 삭제
     async deleteCategories(id){
         if(id.length !== 24){
-            throw new Error('잘못된 카테고리ID 입니다');
+            throw new Error(JSON.stringify({
+                status: 400,
+                message: '잘못된 카테고리ID 입니다'
+            }));
         }
         
         const category = await Category.find({ _id:id });
         
         if(!category){
-            throw new Error('존재하지 않는 카테고리ID 입니다');
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '존재하지 않는 카테고리ID 입니다'
+            }));
         }
 
         await Category.deleteOne({ _id:id });
