@@ -13,7 +13,7 @@ class CategoryService {
     // 카테고리 추가
     async addCategories(name){
         const check = await Category.find({ name });
-        if(check){
+        if(check.length !== 0){
             throw new Error('이미 존재하는 카테고리명입니다');
         }
         
@@ -51,7 +51,7 @@ class CategoryService {
             throw new Error('존재하지 않는 카테고리ID 입니다');
         }
 
-        await Category.delete({ _id:id });
+        await Category.deleteOne({ _id:id });
 
         return await Category.find({});
     }

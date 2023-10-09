@@ -15,7 +15,7 @@ const ProductSchema = new Schema({
     },
     images: String,
     detail: String,
-    maker:String,
+    maker: String,
     },
     {timestamps: true}
 );

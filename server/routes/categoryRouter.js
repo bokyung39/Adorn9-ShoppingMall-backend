@@ -10,10 +10,8 @@ const router = Router();
 
 // 카테고리 목록 확인
 router.get('/', asyncHandler(async (req, res) => {
-    console.log('check');
     console.log(categoryService);
     const categories = await categoryService.getCategories();
-    console.log('check1');
     return res.status(200).json({
         status:200,
         msg: "카테고리 목록",
@@ -38,7 +36,7 @@ router.post('/', asyncHandler(async (req, res) => {
 // 카테고리 수정
 /*
     body 입력값 예시 : { 
-        "id": "651cceae8d266efc5c971fca"        *ring카테고리의 ObjectId
+        "id": "651cceae8d266efc5c971fca",        *ring카테고리의 ObjectId
         "name": "ring2"
     }
 */
