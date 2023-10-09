@@ -2,7 +2,6 @@ const LocalStrategy = require('passport-local').Strategy;
 const { User } = require('../../models');
 //const bcrypt = require('bcrypt');
 const hashPassword = require('../../utils/hash-password');
-
 //로그인 유효성 검사
 const check = (email, password) => {
   const emailRE = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
@@ -34,6 +33,7 @@ const local = new LocalStrategy({
       if(user.password !== hashPassword(password)){
         throw new Error('비밀번호가 일치하지 않습니다. 다시 한 번 확인해 주세요.');
       } 
+
         done(null, {name: user.name});
     } catch (err) {
       return done(err, null);
