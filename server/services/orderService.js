@@ -38,7 +38,7 @@ class OrderService {
     // 주문 검색
     async getOrder(orderId){
         if(orderId.length !== 24){
-            throw new Error('주문번호를 다시 확인해주세요');
+            throw new Error('잘못된 주문번호입니다');
         }
         const order = await Order.findOne({ _id : orderId });
         if(!order){
@@ -50,7 +50,7 @@ class OrderService {
     // 주문 삭제
     async deleteOrder(orderId){
         if(orderId.length !== 24){
-            throw new Error('주문번호를 다시 확인해주세요');
+            throw new Error('잘못된 주문번호입니다');
         }
         const order = await Order.findOne({ _id : orderId });
         if(!order){
