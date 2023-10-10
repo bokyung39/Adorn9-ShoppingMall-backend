@@ -19,6 +19,10 @@ const UserSchema = new Schema({
     type:String,
     required:true
    }, // 유저 전화번호
+   password_reset:{
+    type:Boolean,
+    default:false
+   },
    admin:{
     type:Boolean,
     default:false

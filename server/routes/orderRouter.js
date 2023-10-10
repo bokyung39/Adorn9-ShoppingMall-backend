@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { Order } = require('../models');
+const { Order ,User} = require('../models');
 const asyncHandler = require('../utils/async-handler');
 const { orderService } = require('../services');
 const { userInfo } = require('os');
@@ -27,10 +27,10 @@ const router = Router();
 */
 
 router.post('/', asyncHandler(async (req, res) => {
-    const { name, items, address, phoneNumber } = req.body;
+    const { user_name, items, address, phone_number } = req.body;
     
-    const newOrder = await orderService.saveOrder( name, items, address, phoneNumber );
-    const memberOrder = await user.findOne(name);
+    const newOrder = await orderService.saveOrder( user_name, items, address, phone_number );
+    const memberOrder = await User.findOne(user_name);
     console.log(newOrder);
 
     return res.status(201).json({
@@ -38,6 +38,7 @@ router.post('/', asyncHandler(async (req, res) => {
         msg: "주문 완료되었습니다",
         orderId: newOrder._id,
         newOrder,
+        // ordered_user:memberOrder._id
     })
 }));
 

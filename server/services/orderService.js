@@ -1,4 +1,4 @@
-const { Order, Product } = require('../models');
+const { Order, Product ,User} = require('../models');
 
 class OrderService {
     constructor(Order) {
@@ -14,13 +14,17 @@ class OrderService {
             const itemPrice = Number(obj.quantity) * Number(objPrice.get('price'));
             totalPrice = totalPrice + Number(itemPrice);
         }
+
+        const orderedUser = await User.findOne({ phone_number: phoneNumber });
+
         const order = await Order.create({
+            user_id: orderedUser? orderedUser._id : null,
             items,
             total_price: totalPrice,
-            user_name: name,
+            name,
             address,
             phone_number: phoneNumber,
-            status: this.status[0],
+            // status: ITEM_READY,
         });
 
         return order;

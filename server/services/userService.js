@@ -1,6 +1,7 @@
-const {User} =require('../models')
+const {User,Order} =require('../models')
 const hashPassword = require('../utils/hash-password')
-
+const generateRandomPassword = require('../utils/generate-random-password')
+const sendMail = require('../utils/send-mail')
 
 class UserService {
 
@@ -23,7 +24,7 @@ class UserService {
   }//email은 알파벳과 숫자의 갯수는 상관없지만 @과 .을 사이에 두는 일반적인 형태로 제한
   if(!(phoneRE.test(phone_number))){
     throw new Error('올바른 전화번호를 입력해주세요.')
-  }//전화번호는 -를 뺀 00000000000 형태로 제한
+  }//전화번호는 -를 뺀 00000000000 형로 제한
   
 }
   //회원가입
@@ -60,10 +61,20 @@ class UserService {
   
   //마이프로필
   async myProfile(userinfo){
-    const Profile = await User.findOne({email:userinfo})
+  const Profile = await User.findOne({email:userinfo})
+  if(!Profile){throw new Error('존재하지 않는 계정입니다.')}
     return Profile;
   }
 
+  async orderlist(userinfo){
+    const {user_name,phone_number} = userinfo;
+    const {list} = await User.find({user_name})
+
+    return {list}
+    
+
+  }
+//회원 탈퇴
 async resignUser(userinfo){
   const email = userinfo
   await User.deleteOne({email})
@@ -71,9 +82,19 @@ async resignUser(userinfo){
 }
 
 
+//비밀 번호 찾기
+async passwordReset(userinfo){
+  const email = userinfo
+  const password = generateRandomPassword();
+  const hashedPassword = hashPassword(password)
 
-
-
+  await User.updateOne({email},{password:hashedPassword,
+  password_reset:true})
+  await sendMail(email, `비밀번호가 변경됐습니다.` , `변경된 비밀번호는 ${password}입니다.`)
+    // const goodbye = '비밀번호 변경 후 발송됐습니다.'
+    // return goodbye
+    return;
+}
 
 
 
