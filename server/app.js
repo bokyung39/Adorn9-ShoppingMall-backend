@@ -6,7 +6,6 @@ const loginRouter = require('./routes/loginRouter');
 const productRouter = require('./routes/productRouter');
 const userRouter = require('./routes/userRouter')
 const orderRouter = require('./routes/orderRouter');
-const categoryRouter = require('./routes/categoryRouter');
 const errorHandler = require('./middlewares');
   
 const { swaggerUi, specs } = require("./swagger")
@@ -39,10 +38,9 @@ app.use(passport.session());
 //app.use(bodyParser.json());
 
 app.use('/api/v1/products', productRouter);
-app.use('/api/v1/users', userRouter);
+app.use('/api/v1/users', userRouter)
 app.use('/api/v1/orders', orderRouter);
-app.use('/api/v1/users', loginRouter); 
-app.use('/api/v1/categories', categoryRouter);
+// app.use('/api/v1/users', loginRouter); 
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
 
