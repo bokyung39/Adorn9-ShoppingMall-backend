@@ -72,30 +72,26 @@ class OrderService {
         }else if(order.status !== "상품준비중"){
             throw new Error(JSON.stringify({
                 status: 403,
-                message: '배송이 완료된 경우 주문 취소가 불가능합니다. 관리자에게 문의해주세요'
+                message: '배송준비중 이후부터는 주문 취소가 불가능합니다. 관리자에게 문의해주세요'
             }));
         }
         await Order.deleteOne({ _id : orderId });
     }
 
-
-
-    // 사용자 ID로 주문 목록 조회
+    // 회원 ID(고유번호)로 주문 목록 조회
     async getOrdersByUserId(userId) {
-        const orders = await this.Order.find({ _id: userId });
+        const orders = await this.Order.find({ user_id: userId });
         return orders;
     }
 
+    // // 회원 이름으로 주문 목록 조회
+    // async getOrdersByUserName(userName) {
+    //     const orders = await this.Order.find({ user_name: userName });
+    //     console.log(orders)
+    //     return orders;
+    // }
 
-    // 사용자 이름으로 주문 목록 조회
-    async getOrdersByUserName(userName) {
-        const orders = await this.Order.find({ user_name: userName });
-        console.log(orders)
-        return orders;
-    }
-    
-
-    // 주문 수정 (사용자)
+    // 주문 수정 (회원)
     async updateOrder(userId, orderId, name, items, address, phoneNumber) {
         const order = await this.Order.findOne({ _id: orderId, user_id: userId });
 
@@ -106,26 +102,25 @@ class OrderService {
             }));
         }
 
-        // 주문이 상품 준비중인 경우에만 수정이 가능합니다.
-        if (order.status !== this.statusEnum.ITEM_READY) {
+        if (order.status !== "상품준비중") {
             throw new Error(JSON.stringify({
                 status: 403,
                 message: '이미 배송이 시작된 주문은 수정할 수 없습니다',
             }));
         }
 
-        // 주문 정보를 업데이트합니다.
+        // 수정 내역 정보 업데이트
         order.name = name;
         order.items = items;
         order.address = address;
         order.phone_number = phoneNumber;
 
-        // 업데이트된 주문 정보를 저장하고 반환합니다.
+        // 업데이트된 주문 정보 저장, 반환
         return order.save();
     }
 
     // 주문 삭제 (사용자)
-    async deleteOrder(userId, orderId) {
+    async deleteOrderUser(userId, orderId) {
         const order = await this.Order.findOne({ _id: orderId, user_id: userId });
 
         if (!order) {
@@ -135,15 +130,14 @@ class OrderService {
             }));
         }
 
-        // 주문이 상품 준비중인 경우에만 삭제가 가능합니다.
-        if (order.status !== this.statusEnum.ITEM_READY) {
-            throw new Error(JSON.stringify({
-                status: 403,
-                message: '이미 배송이 시작된 주문은 삭제할 수 없습니다',
-            }));
-        }
+        // // 주문이 상품 준비중인 경우에만 삭제 가능
+        // if (order.status !== "상품준비중") {
+        //     throw new Error(JSON.stringify({
+        //         status: 403,
+        //         message: '이미 배송이 시작된 주문은 삭제할 수 없습니다',
+        //     }));
+        // }
 
-        // 주문을 삭제합니다.
         await this.Order.deleteOne({ _id: orderId });
     }
 
