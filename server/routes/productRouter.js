@@ -6,18 +6,41 @@ const router = Router();
 
 // 전체 상품 조회. 요청 URI : GET ~~/api/v1/products
 router.get('/', asyncHandler(async (req, res) => {
-    const products = await productService.getProducts();
+  const products = await productService.getProducts();
 
-    return res.status(200).json({
+  return res.status(200).json({
     status: 200,
     msg: "전체 상품 리스트",
     products,
   });
 }));
 
-// 메인 페이지 상품 조회(임시)
-router.get('/main', asyncHandler(async (req, res) => {
-  res.send('main page');
+// 메인 페이지 상품 조회
+// 피드 이미지 8개
+router.get('/main/feeds', asyncHandler(async (req, res) => {
+  const feeds = await productService.getfeeds();
+  return res.status(200).json({
+    status:200,
+    msg: `feed 목록`,
+    feeds,
+  });
+}));
+
+// 광고 이미지 3개
+// router.get('/main/ads', asyncHandler(async (req, res) => {
+  
+// }));
+
+// 최신 등록순 4개
+router.get('/main/new-products', asyncHandler(async (req, res) => {
+  const newProducts = await productService.getNewProducts();
+
+  return res.status(200).json({
+    status:200,
+    msg: `최근 등록된 상품`,
+    newProducts,
+  });
+
 }));
 
 // 카테고리 + 페이지네이션. 요청 URI : GET ~~/api/v1/products/categories?category=ring&page=1
