@@ -21,7 +21,7 @@ const router = Router();
 
 // 주문 추가
 router.post('/', asyncHandler(async (req, res) => {
-    const { name, items, address, phoneNumber } = req.body;
+    const { user_name, items, address, phone_number } = req.body;
     
     const newOrder = await orderService.saveOrder( name, items, address, phoneNumber );
 
@@ -30,6 +30,7 @@ router.post('/', asyncHandler(async (req, res) => {
         msg: "주문 완료되었습니다",
         orderId: newOrder._id,
         newOrder,
+        // ordered_user:memberOrder._id
     })
 }));
 

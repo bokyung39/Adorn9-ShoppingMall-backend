@@ -47,7 +47,7 @@ app.use('/api/v1/categories', categoryRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
 
 app.use('/', (req,res) => {
-    res.send('ok');
+    res.json('ok');
 });
 
 app.use(errorHandler);
