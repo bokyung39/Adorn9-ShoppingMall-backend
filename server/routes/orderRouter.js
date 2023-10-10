@@ -57,27 +57,21 @@ router.delete('/:orderId', asyncHandler(async (req, res, next) => {
 }));
 
 
-// 사용자 이름으로 주문 조회
+// 사용자 ID(고유번호)로 주문 목록 조회
 router.get('/', authenticateToken, asyncHandler(async (req, res, next) => {
     const userId = req.user.userId; // 로그인한 사용자의 ID  
-    const userName = req.user.userName;
-    // console.log("asdssss");
-    // console.log(userId);
-    // console.log(userName);
-    //const order = await orderService.getOrdersByUserId(userId); // 사용자 id로
-    const order = await orderService.getOrdersByUserName(userName); // 사용자 이름으로
-    
-    res.status(200).json({ //주문번호로 
+    const order = await orderService.getOrdersByUserId(userId);
+
+    res.status(200).json({
         status: 200,
-        name: userName,
         msg: '주문 목록 조회 성공',
         order,
     });
 }));
 
-// 주문 수정 (사용자)
-router.put('/:orderId', asyncHandler(async (req, res, next) => {
-    const userId = req.user._id; // 로그인한 사용자의 ID
+// 주문 수정 (회원)
+router.put('/:orderId', authenticateToken, asyncHandler(async (req, res, next) => {
+    const userId = req.user.userId; // 로그인한 사용자의 ID
     const orderId = req.params.orderId;
     const { name, items, address, phoneNumber } = req.body;
 
@@ -89,25 +83,24 @@ router.put('/:orderId', asyncHandler(async (req, res, next) => {
             updatedOrder,
         });
     } catch (error) {
-        next(error);
+        res.status(error.status).json(JSON.parse(error.message));
     }
 }));
 
 
-
-// 주문 삭제 (사용자)
-router.delete('/:orderId', passport.authenticate('jwt', { session: false }), asyncHandler(async (req, res, next) => {
+// 주문 삭제 (회원)
+router.delete('/:orderId', authenticateToken, asyncHandler(async (req, res, next) => {
     const userId = req.user._id; // 로그인한 사용자의 ID
     const orderId = req.params.orderId;
-
+  
     try {
-        await orderService.deleteOrder(userId, orderId);
+        await orderService.deleteOrderUser(userId, orderId);
         res.status(200).json({
             status: 200,
             msg: '주문이 삭제되었습니다',
         });
     } catch (error) {
-        next(error);
+        res.status(error.status).json(JSON.parse(error.message));
     }
 }));
 
