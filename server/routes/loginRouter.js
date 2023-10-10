@@ -7,8 +7,8 @@ const asyncHandler = require('../utils/async-handler');
 /*
 로그인 성공 데이터
 {
-  "email": "usera@example.com",
-  "password": "1234"
+  "email": "aaaaa@example.com",
+  "password": "1234!@asd56"
 }
 hashpassword: $2b$08$AN10tp5cY4O6kdE4i8a9DukYylAs0O/hoC5.VwPVy2WMIOk4mogtK
 */
