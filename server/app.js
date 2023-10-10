@@ -45,7 +45,7 @@ app.use('/api/v1/users', loginRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
 
 app.use('/', (req,res) => {
-    res.json("ok");
+    res.json('ok');
 });
 
 app.use(errorHandler);
