@@ -1,7 +1,7 @@
 const { Schema } = require('mongoose');
 
 const OrderSchema = new Schema({
-    ordered_user: {
+    user_id: {
         type: Schema.Types.ObjectId,
         ref: "User",
     },
@@ -18,7 +18,7 @@ const OrderSchema = new Schema({
         type: Number,
         required: true,
     },
-    user_name: {
+    name: {
         type: String,
         required: true,
     },

@@ -1,4 +1,4 @@
-const { Product, Category } = require('../models');
+const { Product, Category, Ad } = require('../models');
 
 class ProductService {
     constructor(Product) {
@@ -14,9 +14,7 @@ class ProductService {
 
     // 전체 상품 조회
     async getProducts() {
-        const products = await Product.find({});
-
-        return products;
+        return await Product.find({});
     }
 
     // 카테고리 검색 결과에 페이지네이션 적용 
@@ -27,35 +25,64 @@ class ProductService {
         const categoryCollection = await Category.findOne({ name: category });
           
         if(!categoryCollection){
-            throw new Error("존재하지 않는 카테고리입니다.");
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '존재하지 않는 카테고리입니다'
+            }));
         }
           
         const productList = await Product.find({ category:categoryCollection._id }, null, { skip: skipCount, limit: perPage})
         if(!productList){
-            throw new Error("상품이 존재하지 않습니다.");
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '상품이 존재하지 않습니다'
+            }));
         }
         return productList;
     }
 
     // 특정 상품 조회
     async getProductById(productId) {
+        if(productId.length !== 24){
+            throw new Error(JSON.stringify({
+                status: 400,
+                message: '잘못된 상품번호 입니다'
+            }));
+        }
         // 우선 해당 상품이 db에 존재하는지 확인
         const product = await this.Product.findOne({_id:productId});
         if (!product) {
-            throw new Error("상품이 존재하지 않습니다.");
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '상품이 존재하지 않습니다'
+            }));
         }
 
         return product;
     }
 
+    // 카테고리로 조회
     async getCategoryProducts(category) {
         const categoryCollection = await Category.findOne({ name: category });
 
         if(!categoryCollection){
-            throw new Error("존재하지 않는 카테고리입니다.");
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '존재하지 않는 카테고리입니다'
+            }));
         }
 
-        return categoryCollection;
+        const productList = await Product.find({ category:categoryCollection._id })
+
+        return productList;
+    }
+
+    async getfeeds() {
+        return await Ad.find({ type: "feed" }).limit(8);
+    }
+
+    async getNewProducts() {
+        return await Product.find({}).sort({ "_id":-1 }).limit(4);
     }
 }
 
