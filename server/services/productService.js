@@ -77,12 +77,34 @@ class ProductService {
         return productList;
     }
 
+    // 메인화면에 표시할 피드 조회
     async getfeeds() {
         return await Ad.find({ type: "feed" }).limit(8);
     }
 
+    // 메인화면에 표시할 상품 조회
     async getNewProducts() {
         return await Product.find({}).sort({ "_id":-1 }).limit(4);
+    }
+
+    // 상품 신규 등록 + 이미지
+    async addProduct(req, res) {
+        const { name, price, category, detail, maker } = req.body;
+        const imageURL = req.file.location
+
+        const categoryName = await Category.find({ _id:category }).get('name');
+
+        const newProduct = await Product.create({
+            name,
+            price: Number(price),
+            category,
+            detail,
+            maker,
+            images: imageURL,
+            category_name: categoryName
+        })
+
+        return newProduct;
     }
 }
 
