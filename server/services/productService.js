@@ -1,4 +1,4 @@
-const { Product, Category } = require('../models');
+const { Product, Category, Ad } = require('../models');
 
 class ProductService {
     constructor(Product) {
@@ -75,6 +75,14 @@ class ProductService {
         const productList = await Product.find({ category:categoryCollection._id })
 
         return productList;
+    }
+
+    async getfeeds() {
+        return await Ad.find({ type: "feed" }).limit(8);
+    }
+
+    async getNewProducts() {
+        return await Product.find({}).sort({ "_id":-1 }).limit(4);
     }
 }
 
