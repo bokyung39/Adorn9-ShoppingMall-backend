@@ -33,7 +33,7 @@ const local = new LocalStrategy({
         throw new Error('비밀번호가 일치하지 않습니다. 다시 한 번 확인해 주세요.');
       } 
 
-        done(null, {name: user.name});
+        done(null, user);
     } catch (err) {
       return done(err, null);
     }
