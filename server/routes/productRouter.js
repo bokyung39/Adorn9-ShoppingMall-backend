@@ -2,7 +2,8 @@ const { Router } = require('express');
 const upload = require('../middlewares/image-uploader');
 const asyncHandler = require('../utils/async-handler');
 const { productService } = require('../services');
-
+const authenticateToken = require('../middlewares/authenticateToken');
+const authenticateTokenAdmin = require('../middlewares/authenticateTokenAdmin');
 const router = Router();
 
 // 전체 상품 조회. 요청 URI : GET ~~/api/v1/products
@@ -97,25 +98,29 @@ Postman으로 테스트시 Body에 form-data선택, key - Value로 아래처럼 
 }
 */
 router.post('/', 
-  upload.single('image'),
+  authenticateTokenAdmin, 
+  upload.single('image'), 
   asyncHandler( async (req, res) => {
     const result = await productService.addProduct(req, res);
 
     res.status(201).json({
-      status:201,
-      msg: '상품이 등록되었습니다',
-      result,
+    status:201,
+    msg: '상품이 등록되었습니다',
+    result,
     });
-  }));
+  })
+);
 
 // 상품 수정
 router.patch('/:id',
+  authenticateTokenAdmin,
   upload.single('image'),
   productService.deleteImage,
   productService.setProduct);
 
 // 상품 삭제
 router.delete('/:id',
+  authenticateTokenAdmin,
   productService.deleteImage,
   productService.deleteProduct);
 
