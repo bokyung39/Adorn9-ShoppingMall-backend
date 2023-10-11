@@ -1,5 +1,15 @@
 const { Product, Category, Ad } = require('../models');
 
+const { DeleteObjectCommand, S3Client } = require('@aws-sdk/client-s3');
+
+const s3 = new S3Client({
+    region: 'ap-northeast-2',
+    credentials: {
+        accessKeyId: process.env.ACCESS_KEY,
+        secretAccessKey: process.env.SECRET_KEY
+    }
+});
+
 class ProductService {
     constructor(Product) {
         this.Product = Product;
@@ -104,21 +114,63 @@ class ProductService {
         return newProduct;
     }
 
-    async setProduct(req, res) {
+    async setProduct(req, res, next) {
         const { id } = req.params;
+
+        const prevProduct = await Product.findOne({_id:id});
+        const prevURL = prevProduct.get('images');
+        const temp = prevURL.split('/');
+        const key = temp[temp.length-1];
+
         const { name, price, category, detail, maker } = req.body;
         const imageURL = req.file.location;
 
-        const modifiedProduct = await Product.findOneAndUpdate(
+        const result = await Product.findOneAndUpdate(
             {_id:id},
             { name, price, category, detail, maker, images:imageURL },
-            { new: true });
+            { new: true}
+        );
 
-        return modifiedProduct;
+        res.status(200).json({
+            status:200,
+            msg: '상품 정보를 수정했습니다',
+            result,
+        });
     }
 
-    async deleteProduct(id) {
-        return await Product.findOneAndDelete({ _id: id });
+    async deleteImage(req, res, next) {
+        const { id } = req.params;
+
+        const prevProduct = await Product.findOne({_id:id});
+        const prevURL = prevProduct.get('images');
+        const temp = prevURL.split('/');
+        const key = temp[temp.length-1];
+
+        let params = {
+            Bucket: 'adorn9',
+            Key: `${key}`
+        };
+        
+        const command = new DeleteObjectCommand(params);
+
+        try {
+            const response = await s3.send(command);
+        }catch(err){
+            console.error(err);
+        }
+
+        next();
+    };
+
+    async deleteProduct(req, res, next) {
+        const { id } = req.params;
+        const result = await Product.findOneAndDelete({ _id: id });
+
+        res.status(200).json({
+            status:200,
+            msg: '상품을 삭제했습니다',
+            result,
+        })
     }
 }
 
