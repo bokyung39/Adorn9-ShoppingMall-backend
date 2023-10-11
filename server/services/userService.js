@@ -61,7 +61,8 @@ class UserService {
   
   //마이프로필
   async myProfile(userinfo){
-  const Profile = await User.findOne({email:userinfo})
+    const {email} = userinfo
+  const Profile = await User.findOne({email})
   if(!Profile){throw new Error('존재하지 않는 계정입니다.')}
     return Profile;
   }
@@ -81,6 +82,12 @@ async resignUser(userinfo){
   
 }
 
+async checkAdmin(userinfo){
+  const {admin} = await User.findOne({email:userinfo})
+  console.log(admin)
+  if(admin){return true}
+  else {return false}
+}
 
 //비밀번호 찾기
 async passwordReset(userinfo){

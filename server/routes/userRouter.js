@@ -7,6 +7,7 @@ const passport = require('passport');
 const loginRequired = require('../middlewares/login-required');
 const authenticateToken = require('../middlewares/authenticateToken');
 const { User } = require('../models');
+const adminToken = require('../middlewares/adminToken')
 
 //회원가입
 
@@ -28,13 +29,16 @@ router.post('/joining',asyncHandler(async(req,res,next)=>{
 }))
 
 
-//개인정보 조회
-router.get('/profile',  asyncHandler(async(req,res,next)=>{
+//개인정보 조회. 쿼리값이 본인 이메일과 다르면 조회가 안되지만
+// 관리자 계정이면 조회가 가능하다.
+router.get('/profile',authenticateToken, asyncHandler(async(req,res,next)=>{
+  const admin = req.user.email
+  const email = req.query.email 
+  console.log(req.user)
 
-  const role = req.user.admin;
-  const userinfo = req.user.email;
-
-  const Profile = await userService.myProfile(userinfo)
+  if(email == req.user.email||await userService.checkAdmin(admin))
+   {
+  const Profile = await userService.myProfile({email})
   res.status(200).json({
     status:200,
     msg:`${Profile.user_name}님의 개인 정보입니다.`,
@@ -42,21 +46,28 @@ router.get('/profile',  asyncHandler(async(req,res,next)=>{
     name:Profile.user_name,
     phone_number:Profile.phone_number,
     order_list:Profile.order_list
-      
-  })
+  })}
+  else {throw new Error('조회 권한이 없습니다.')} 
+  
 }))
 
 //회원 정보 수정
 
-  router.put('/modify', asyncHandler(async(req,res,next)=>{
-    const {email,password,user_name,phone_number} =req.body;
+  router.put('/modify', authenticateToken, asyncHandler(async(req,res,next)=>{
+    const email = req.query.email;
+    const {password,user_name,phone_number} =req.body;
     const userinfo = {email,password,user_name,phone_number}
-
+    const admin = req.user.email
+    console.log(req.user)
+  
+    if(email == req.user.email||await userService.checkAdmin(admin))
+     {
     await userService.formCheck(userinfo);
     const updatedUser = await userService.userUpdate(userinfo)
     
     res.status(200).json({status:200, msg:'개인정보가 수정됐습니다.'})
-    
+     }
+     else{throw new Error(`수정 권한이 없습니다.`)}
   }))
 
 //회원 탈퇴
@@ -122,6 +133,8 @@ router.get('/logout', asyncHandler(async(req, res, next) => {
   }
 }));
 
-
+router.get('/administor',adminToken, asyncHandler(async(req,res,next)=>{
+    res.send('관리자 ㅎㅇ')
+}))
 
 module.exports = router;
