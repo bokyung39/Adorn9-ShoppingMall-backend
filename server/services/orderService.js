@@ -55,7 +55,7 @@ class OrderService {
         return order;
     }
 
-    // 주문 삭제
+    // 주문 삭제 (사용자)
     async deleteOrder(orderId){
         if(orderId.length !== 24){
             throw new Error(JSON.stringify({
@@ -91,6 +91,12 @@ class OrderService {
     //     return orders;
     // }
 
+    // 모든 주문 내역
+    async getAllOrders() {
+        const orders = await this.Order.find();
+        return orders;
+    }
+
     // 주문 수정 (회원)
     async updateOrder(userId, orderId, name, items, address, phoneNumber) {
         const order = await this.Order.findOne({ _id: orderId, user_id: userId });
@@ -119,7 +125,7 @@ class OrderService {
         return order.save();
     }
 
-    // 주문 삭제 (사용자)
+    // 주문 삭제 (관리자)
     async deleteOrderUser(userId, orderId) {
         const order = await this.Order.findOne({ _id: orderId, user_id: userId });
 
