@@ -59,14 +59,41 @@ router.delete('/:orderId', asyncHandler(async (req, res, next) => {
 
 // 사용자 ID(고유번호)로 주문 목록 조회
 router.get('/', authenticateToken, asyncHandler(async (req, res, next) => {
-    const userId = req.user.userId; // 로그인한 사용자의 ID  
-    const order = await orderService.getOrdersByUserId(userId);
+    // const userId = req.user.userId; // 로그인한 사용자의 ID  
+    // const order = await orderService.getOrdersByUserId(userId);
 
-    res.status(200).json({
-        status: 200,
-        msg: '주문 목록 조회 성공',
-        order,
-    });
+    // res.status(200).json({
+    //     status: 200,
+    //     msg: '주문 목록 조회 성공',
+    //     order,
+    // });
+
+    const isAdmin = req.user.isAdmin; // 로그인한 사용자의 관리자 여부
+    console.log(isAdmin);
+    if (isAdmin) {
+        // 관리자인 경우 모든 주문 내역 조회
+        const orders = await orderService.getAllOrders();
+        res.status(200).json({
+            status: 200,
+            msg: '모든 주문 목록 조회 성공',
+            orders,
+        });
+    } else {
+        // 일반 사용자인 경우 자신의 주문 내역 조회
+        const userId = req.user.userId; // 로그인한 사용자의 ID  
+        const orders = await orderService.getOrdersByUserId(userId);
+        res.status(200).json({
+            status: 200,
+            msg: '주문 목록 조회 성공',
+            orders,
+        });
+    }
+
+
+
+
+
+
 }));
 
 // 주문 수정 (회원)
