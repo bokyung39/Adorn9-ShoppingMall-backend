@@ -2,7 +2,8 @@ const { Router } = require('express');
 const upload = require('../middlewares/image-uploader');
 const asyncHandler = require('../utils/async-handler');
 const { productService } = require('../services');
-
+const authenticateToken = require('../middlewares/authenticateToken');
+const authenticateTokenAdmin = require('../middlewares/authenticateTokenAdmin');
 const router = Router();
 
 // 전체 상품 조회. 요청 URI : GET ~~/api/v1/products
@@ -96,20 +97,25 @@ Postman으로 테스트시 Body에 form-data선택, key - Value로 아래처럼 
     image: 이미지파일
 }
 */
-router.post('/', 
+router.post('/', authenticateTokenAdmin, 
   upload.single('image'), 
   asyncHandler( async (req, res) => {
-    const result = await productService.addProduct(req, res);
+    const isAdmin = req.user.isAdmin; // 로그인한 사용자의 관리자 여부
+    console.log(isAdmin);
+    if (isAdmin){
+      const result = await productService.addProduct(req, res);
 
-    res.status(201).json({
+      res.status(201).json({
       status:201,
       msg: '상품이 등록되었습니다',
       result,
-    });
+      });
+    }
+    
   }));
 
 // 상품 수정
-router.put('/:id',
+router.put('/:id', authenticateTokenAdmin,
   upload.single('image'),
   asyncHandler( async (req, res) => {
   const result = await productService.setProduct(req, res);
@@ -122,15 +128,22 @@ router.put('/:id',
 }))
 
 // 상품 삭제
-router.delete('/:id', asyncHandler( async (req, res) => {
+router.delete('/:id', authenticateTokenAdmin, asyncHandler( async (req, res) => {
+  // const isAdmin = req.user.isAdmin; // 로그인한 사용자의 관리자 여부
+  // console.log(isAdmin);
+  // if (isAdmin) {
   const { id } = req.params;
   const result = await productService.deleteProduct(id);
 
   res.status(200).json({
-    status:200,
-    msg: '상품을 삭제했습니다',
-    result,
+  status:200,
+  msg: '상품을 삭제했습니다',
+  result,
   })
+  // }else{
+
+  // }
+  
 }))
 
 module.exports = router;
