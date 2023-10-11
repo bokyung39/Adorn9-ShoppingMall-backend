@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 dotenv.config();
+const { nanoid } = require('nanoid');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const { S3Client } = require('@aws-sdk/client-s3');
@@ -18,7 +19,7 @@ const upload = multer({
         acl: 'public-read',
         contentType: multerS3.AUTO_CONTENT_TYPE,
         key: function (req, file, cb) {
-            cb(null, `${file.originalname}`);
+            cb(null, `${nanoid()}`);
         },
     }),
 });

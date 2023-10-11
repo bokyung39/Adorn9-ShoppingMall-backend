@@ -97,53 +97,31 @@ Postman으로 테스트시 Body에 form-data선택, key - Value로 아래처럼 
     image: 이미지파일
 }
 */
-router.post('/', authenticateTokenAdmin, 
+router.post('/', 
+  authenticateTokenAdmin, 
   upload.single('image'), 
   asyncHandler( async (req, res) => {
-    const isAdmin = req.user.isAdmin; // 로그인한 사용자의 관리자 여부
-    console.log(isAdmin);
-    if (isAdmin){
-      const result = await productService.addProduct(req, res);
+    const result = await productService.addProduct(req, res);
 
-      res.status(201).json({
-      status:201,
-      msg: '상품이 등록되었습니다',
-      result,
-      });
-    }
-    
-  }));
+    res.status(201).json({
+    status:201,
+    msg: '상품이 등록되었습니다',
+    result,
+    });
+  })
+);
 
 // 상품 수정
-router.put('/:id', authenticateTokenAdmin,
+router.patch('/:id',
+  authenticateTokenAdmin,
   upload.single('image'),
-  asyncHandler( async (req, res) => {
-  const result = await productService.setProduct(req, res);
-
-  res.status(200).json({
-    status:200,
-    msg: '상품 정보를 수정했습니다',
-    result,
-  });
-}))
+  productService.deleteImage,
+  productService.setProduct);
 
 // 상품 삭제
-router.delete('/:id', authenticateTokenAdmin, asyncHandler( async (req, res) => {
-  // const isAdmin = req.user.isAdmin; // 로그인한 사용자의 관리자 여부
-  // console.log(isAdmin);
-  // if (isAdmin) {
-  const { id } = req.params;
-  const result = await productService.deleteProduct(id);
-
-  res.status(200).json({
-  status:200,
-  msg: '상품을 삭제했습니다',
-  result,
-  })
-  // }else{
-
-  // }
-  
-}))
+router.delete('/:id',
+  authenticateTokenAdmin,
+  productService.deleteImage,
+  productService.deleteProduct);
 
 module.exports = router;
