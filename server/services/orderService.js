@@ -12,7 +12,8 @@ class OrderService {
     }
 
     // 주문 저장 - 배송비 포함을 boolean으로 체크해야?
-    async saveOrder(userId, name, items, address, phoneNumber) {
+    // name, phoneNumber, email, receiver_name, address, items
+    async saveOrder(name, phoneNumber, email, receiverName, address, items) {
         let totalPrice = 0;
         for(const obj of items){
             const objPrice = await Product.findOne({name:obj.item});
@@ -24,12 +25,13 @@ class OrderService {
 
         const order = await Order.create({
             user_id: orderedUser? orderedUser._id : null,
-            //user_id: userId,
+            name,
+            phone_number: phoneNumber,
+            email,
+            receiver_name: receiverName,
+            address,
             items,
             total_price: totalPrice,
-            name,
-            address,
-            phone_number: phoneNumber,
             status: this.statusEnum.ITEM_READY,
         });
 

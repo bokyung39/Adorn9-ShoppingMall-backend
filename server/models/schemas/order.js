@@ -22,13 +22,22 @@ const OrderSchema = new Schema({
         type: String,
         required: true,
     },
-    address: {
-        type: String,
-        required: true,
-    },  
     phone_number: {
         type: String,
         required: true,
+    },
+    email : {
+        type: String
+    },
+    receiver_name: {
+        type: String
+    },
+    address: {
+        type: String,
+        required: true,
+    },
+    payment: {
+        type: String
     },
     status: String,
     },{

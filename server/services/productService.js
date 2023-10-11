@@ -172,6 +172,20 @@ class ProductService {
             result,
         })
     }
+
+    async getManyProducts(idlist) {
+        const result = [];
+        
+        for(const id of idlist) {
+            const product = await Product.findOne({_id: id});
+            if(!product){
+                throw new error(`${id} 에 해당하는 상품이 없습니다`);
+            }
+            result.push(product);
+        }
+        
+        return result;
+    }
 }
 
 const productService = new ProductService(Product);

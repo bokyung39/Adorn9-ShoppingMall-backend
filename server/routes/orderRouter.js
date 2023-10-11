@@ -9,29 +9,30 @@ const authenticateToken = require('../middlewares/authenticateToken');
 /* 임시로 작성한 프론트쪽 주문요청( api 테스트시 body에 넣고 테스트)
 {
     "name": "홍길동",
+    "phoneNumber":"01012345678",
+    "email":"aabb@gmaiii.com",
+    "receiver_name": "김철수",
+    "address":"대한민국",
     "items": [
         {
             "item":"엘리베이션 링",
             "quantity": 3
         }
-    ],
-    "address":"대한민국",
-    "phoneNumber":"01012345678"
+    ]
 }
 */
 
 // 주문 추가
 router.post('/', asyncHandler(async (req, res) => {
-    const { user_name, items, address, phone_number } = req.body;
+    const { name, phoneNumber, email, receiver_name, address, items } = req.body;
     
-    const newOrder = await orderService.saveOrder( name, items, address, phoneNumber );
+    const newOrder = await orderService.saveOrder( name, phoneNumber, email, receiver_name, address, items );
 
     return res.status(201).json({
         status:201,
         msg: "주문 완료되었습니다",
         orderId: newOrder._id,
         newOrder,
-        // ordered_user:memberOrder._id
     })
 }));
 

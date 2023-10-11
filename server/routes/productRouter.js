@@ -45,6 +45,19 @@ router.get('/main/new-products', asyncHandler(async (req, res) => {
 
 }));
 
+// 한번에 여러개의 ID를 받아서 한꺼번에 리턴
+// [ id, id, id, id] 같은방식
+router.get('/array', asyncHandler(async (req, res) => {
+  const { idlist } = req.body;
+  const products = await productService.getManyProducts(idlist);
+
+  return res.status(200).json({
+    status:200,
+    msg: `상품 리스트`,
+    products,
+  });
+}));
+
 // 카테고리 + 페이지네이션. 요청 URI : GET ~~/api/v1/products/categories?category=ring&page=1
 router.get('/categories', asyncHandler(async (req, res) => {
   const { category, page } = req.query;
