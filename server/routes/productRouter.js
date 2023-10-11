@@ -47,7 +47,7 @@ router.get('/main/new-products', asyncHandler(async (req, res) => {
 
 // 한번에 여러개의 ID를 받아서 한꺼번에 리턴
 // [ id, id, id, id] 같은방식
-router.get('/array', asyncHandler(async (req, res) => {
+router.post('/array', asyncHandler(async (req, res) => {
   const { idlist } = req.body;
   const products = await productService.getManyProducts(idlist);
 
