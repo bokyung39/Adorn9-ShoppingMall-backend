@@ -97,7 +97,7 @@ Postman으로 테스트시 Body에 form-data선택, key - Value로 아래처럼 
 }
 */
 router.post('/', 
-  upload.single('image'), 
+  upload.single('image'),
   asyncHandler( async (req, res) => {
     const result = await productService.addProduct(req, res);
 
@@ -109,28 +109,14 @@ router.post('/',
   }));
 
 // 상품 수정
-router.put('/:id',
+router.patch('/:id',
   upload.single('image'),
-  asyncHandler( async (req, res) => {
-  const result = await productService.setProduct(req, res);
-
-  res.status(200).json({
-    status:200,
-    msg: '상품 정보를 수정했습니다',
-    result,
-  });
-}))
+  productService.deleteImage,
+  productService.setProduct);
 
 // 상품 삭제
-router.delete('/:id', asyncHandler( async (req, res) => {
-  const { id } = req.params;
-  const result = await productService.deleteProduct(id);
-
-  res.status(200).json({
-    status:200,
-    msg: '상품을 삭제했습니다',
-    result,
-  })
-}))
+router.delete('/:id',
+  productService.deleteImage,
+  productService.deleteProduct);
 
 module.exports = router;
