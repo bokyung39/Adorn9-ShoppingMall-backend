@@ -26,6 +26,7 @@
     "swagger": "^0.7.5"
   },
   "devDependencies": {
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
     "nodemailer": "^6.9.6",
     "nodemon": "^3.0.1",

@@ -82,7 +82,7 @@ async resignUser(userinfo){
 }
 
 
-//비밀 번호 찾기
+//비밀번호 찾기
 async passwordReset(userinfo){
   const email = userinfo
   const password = generateRandomPassword();
@@ -95,6 +95,11 @@ async passwordReset(userinfo){
     // return goodbye
     return;
 }
+
+//비밀번호 찾기 후 반드시 해야하는 비밀번호 변경
+// async passwordChange(userinfo){
+//   const {email}
+// }
 
 
 

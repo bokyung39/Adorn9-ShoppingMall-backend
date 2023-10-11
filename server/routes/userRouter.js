@@ -2,8 +2,10 @@ const {Router } = require ('express');
 const asyncHandler = require('../utils/async-handler');
 const {userService} = require('../services/userService')
 const router = Router();
+const { setUserToken } = require('../utils/jwt'); 
 const passport = require('passport'); 
 const loginRequired = require('../middlewares/login-required');
+const authenticateToken = require('../middlewares/authenticateToken');
 const { User } = require('../models');
 
 //회원가입
@@ -27,10 +29,10 @@ router.post('/joining',asyncHandler(async(req,res,next)=>{
 
 
 //개인정보 조회
-router.get('/profile', asyncHandler(async(req,res,next)=>{
+router.get('/profile',  asyncHandler(async(req,res,next)=>{
 
-  const role = req.body.admin;
-  const userinfo = req.body.email;
+  const role = req.user.admin;
+  const userinfo = req.user.email;
 
   const Profile = await userService.myProfile(userinfo)
   res.status(200).json({
@@ -80,32 +82,45 @@ router.post('/changing-password',asyncHandler(async(req,res,next)=>{
 }))
 
 
+router.post('/login', passport.authenticate('local', { session: false }), asyncHandler(async(req, res, next) => {
+  //throw{status:400, message:"throw"};
+  setUserToken(res, req.user);
+  console.log(req.user)
+  try{
+    res.status(200).json({
+      message: `${req.user.user_name}님 환영합니다.`
+      
+    });
+  }catch(err){
+    error.status = 500;
+    next(error); 
+  }
 
 
-router.post('/login', passport.authenticate('local'), asyncHandler(async (req, res) => {
-  // 로그인 성공 시 처리
-  res.status(200).json({
-    message: '로그인 성공'
-  });
 }));
 
-router.get('/logout', (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ message: '로그아웃 중 오류가 발생했습니다.' });
-    }
-    res.status(202).json({
-      message: '로그아웃 성공'
-    });
-  });
-});
+// 구글 로그인
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google/callback', passport.authenticate('google', { session: false }), asyncHandler(async (req, res) => {
+  // 사용자 토큰 설정
+  setUserToken(res, req.user);
+  // 로그인 후 리다이렉트할 경로 설정
+  res.redirect('/');
+}));
 
-//주문 목록 조회
-
-// router.get('/order-list/?user_name',asyncHandler(async(req,res,next)=>{
-//   const buyer_name = req.query.user_name;
-
-// })
+// 로그아웃
+router.get('/logout', asyncHandler(async(req, res, next) => {
+  try {
+    // 쿠키를 삭제하기 위해 clearCookie() 메서드 사용
+    res.clearCookie('token'); // 'token'은 삭제하려는 쿠키의 이름
+    return res.status(202).json({ message: '로그아웃 성공' });
+  } catch (error) {
+    console.error('로그아웃 중 오류 발생:', error);
+    //return res.status(500).json({ message: '로그아웃 중 오류가 발생했습니다.' });
+    error.status = 500;
+    next(error);
+  }
+}));
 
 
 
