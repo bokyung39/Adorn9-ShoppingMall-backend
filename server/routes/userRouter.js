@@ -82,17 +82,23 @@ router.delete('/withdraw', asyncHandler(async(req,res,next)=>{
 //비밀번호 찾기
 router.post('/reset-password', asyncHandler(async(req,res,next)=>{
   const {email} = req.body;
-  const user = await findOne({email})
+  const user = await User.findOne({email})
   if(!user) {throw new Error('등록된 계정이 아닙니다.')}
   const goodbye = await userService.passwordReset(email)
   res.status(200).send({status:200, msg:'변경된 비밀번호를 이메일로 발송했습니다.'})
 }))
 
-router.post('/changing-password',asyncHandler(async(req,res,next)=>{
-  res.render('')
+//비밀번호 변경
+router.post('/changing-password',authenticateToken,asyncHandler(async(req,res,next)=>{
+  if(req.user.passwordReset==false){return res.redirect('/modify')}
+  const email = req.user.email;
+  const password = req.body;
+  const userinfo = {email,password}
+  await userService.passwordChange(userinfo)
+  res.status(200).send({status:200, msg:`비밀번호가 성공적으로 변경됐습니다.`})
 }))
 
-
+//로그인
 router.post('/login', passport.authenticate('local', { session: false }), asyncHandler(async(req, res, next) => {
   //throw{status:400, message:"throw"};
   setUserToken(res, req.user);
@@ -132,9 +138,5 @@ router.get('/logout', asyncHandler(async(req, res, next) => {
     next(error);
   }
 }));
-
-router.get('/administor',adminToken, asyncHandler(async(req,res,next)=>{
-    res.send('관리자 ㅎㅇ')
-}))
 
 module.exports = router;

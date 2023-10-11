@@ -84,7 +84,6 @@ async resignUser(userinfo){
 
 async checkAdmin(userinfo){
   const {admin} = await User.findOne({email:userinfo})
-  console.log(admin)
   if(admin){return true}
   else {return false}
 }
@@ -98,15 +97,19 @@ async passwordReset(userinfo){
   await User.updateOne({email},{password:hashedPassword,
   password_reset:true})
   await sendMail(email, `비밀번호가 변경됐습니다.` , `변경된 비밀번호는 ${password}입니다.`)
-    // const goodbye = '비밀번호 변경 후 발송됐습니다.'
-    // return goodbye
     return;
 }
 
 //비밀번호 찾기 후 반드시 해야하는 비밀번호 변경
-// async passwordChange(userinfo){
-//   const {email}
-// }
+async passwordChange(userinfo){
+  const {email,password} = userinfo
+  const hashedPassword = hashPassword(String(password))
+  console.log(hashedPassword)
+  await User.updateOne({email},{password:hashedPassword,
+    password_rest:false})
+    return;
+
+}
 
 
 
