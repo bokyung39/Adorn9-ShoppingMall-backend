@@ -3,7 +3,7 @@ const { Product, Category, Ad } = require('../models');
 class ProductService {
     constructor(Product) {
         this.Product = Product;
-        this.perPage = 16;
+        this.perPage = 12;
     }
 
     // 한 페이지에 표시할 물품 개수를 바꿀 경우
@@ -77,12 +77,48 @@ class ProductService {
         return productList;
     }
 
+    // 메인화면에 표시할 피드 조회
     async getfeeds() {
         return await Ad.find({ type: "feed" }).limit(8);
     }
 
+    // 메인화면에 표시할 상품 조회
     async getNewProducts() {
         return await Product.find({}).sort({ "_id":-1 }).limit(4);
+    }
+
+    // 상품 신규 등록 + 이미지
+    async addProduct(req, res) {
+        const { name, price, category, detail, maker } = req.body;
+        const imageURL = req.file.location;
+
+        const newProduct = await Product.create({
+            name,
+            price: Number(price),
+            category,
+            detail,
+            maker,
+            images: imageURL,
+        })
+
+        return newProduct;
+    }
+
+    async setProduct(req, res) {
+        const { id } = req.params;
+        const { name, price, category, detail, maker } = req.body;
+        const imageURL = req.file.location;
+
+        const modifiedProduct = await Product.findOneAndUpdate(
+            {_id:id},
+            { name, price, category, detail, maker, images:imageURL },
+            { new: true });
+
+        return modifiedProduct;
+    }
+
+    async deleteProduct(id) {
+        return await Product.findOneAndDelete({ _id: id });
     }
 }
 

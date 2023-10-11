@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const upload = require('../middlewares/image-uploader');
 const asyncHandler = require('../utils/async-handler');
 const { productService } = require('../services');
 
@@ -81,5 +82,55 @@ router.get('/categories/:categories', asyncHandler(async (req, res) => {
     categoryProducts,
   });
 }));
+
+// 이미지 등록시 
+// 상품 이름, 상품 가격, 상품 카테고리, 상품 이미지, 상품 상세설명, 상품 메이커 
+/*
+Postman으로 테스트시 Body에 form-data선택, key - Value로 아래처럼 등록
+{
+    name:테스트상품,
+    price: 5000,
+    category: 651ccd268d266efc5c971fc9,
+    detail: 상품등록 테스트 상세설명입니다,
+    maker: ADORN9,
+    image: 이미지파일
+}
+*/
+router.post('/', 
+  upload.single('image'), 
+  asyncHandler( async (req, res) => {
+    const result = await productService.addProduct(req, res);
+
+    res.status(201).json({
+      status:201,
+      msg: '상품이 등록되었습니다',
+      result,
+    });
+  }));
+
+// 상품 수정
+router.put('/:id',
+  upload.single('image'),
+  asyncHandler( async (req, res) => {
+  const result = await productService.setProduct(req, res);
+
+  res.status(200).json({
+    status:200,
+    msg: '상품 정보를 수정했습니다',
+    result,
+  });
+}))
+
+// 상품 삭제
+router.delete('/:id', asyncHandler( async (req, res) => {
+  const { id } = req.params;
+  const result = await productService.deleteProduct(id);
+
+  res.status(200).json({
+    status:200,
+    msg: '상품을 삭제했습니다',
+    result,
+  })
+}))
 
 module.exports = router;

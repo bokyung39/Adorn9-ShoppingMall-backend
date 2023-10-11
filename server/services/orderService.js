@@ -30,7 +30,7 @@ class OrderService {
             name,
             address,
             phone_number: phoneNumber,
-            status: ITEM_READY,
+            status: this.statusEnum.ITEM_READY,
         });
 
         return order;
