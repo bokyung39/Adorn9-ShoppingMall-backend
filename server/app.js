@@ -12,7 +12,6 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger/swagger.json')
-
 require('dotenv').config();
 
 const MongoURL = process.env.MONGO_URL;
