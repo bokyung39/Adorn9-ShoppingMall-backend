@@ -24,8 +24,8 @@ const authenticateToken = require('../middlewares/authenticateToken');
 
 // 주문 추가
 router.post('/', asyncHandler(async (req, res) => {
-    const { name, phoneNumber, email, receiverName, address, items } = req.body;
-    const newOrder = await orderService.saveOrder( name, phoneNumber, email, receiverName, address, items );
+    const { name, phoneNumber, email, receiverName, receiverPhoneNumber, payment, address, items, totalPrice } = req.body;
+    const newOrder = await orderService.saveOrder( name, phoneNumber, email, receiverName, receiverPhoneNumber, payment, address, items, totalPrice );
 
     return res.status(201).json({
         status:201,

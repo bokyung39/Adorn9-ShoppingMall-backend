@@ -13,13 +13,13 @@ class OrderService {
 
     // 주문 저장 - 배송비 포함을 boolean으로 체크해야?
     // name, phoneNumber, email, receiver_name, address, items
-    async saveOrder(name, phoneNumber, email, receiverName, address, items) {
-        let totalPrice = 0;
-        for(const obj of items){
-            const objPrice = await Product.findOne({name:obj.item});
-            const itemPrice = Number(obj.quantity) * Number(objPrice.get('price'));
-            totalPrice = totalPrice + Number(itemPrice);
-        }
+    async saveOrder(name, phoneNumber, email, receiverName, receiverPhoneNumber, payment, address, items, totalPrice) {
+        // let totalPrice = 0;
+        // for(const obj of items){
+        //     const objPrice = await Product.findOne({name:obj.item});
+        //     const itemPrice = Number(obj.quantity) * Number(objPrice.get('price'));
+        //     totalPrice = totalPrice + Number(itemPrice);
+        // }
 
         const orderedUser = await User.findOne({ phone_number: phoneNumber });
 
@@ -29,6 +29,8 @@ class OrderService {
             phone_number: phoneNumber,
             email,
             receiver_name: receiverName,
+            receiver_phone_number: receiverPhoneNumber,
+            payment,
             address,
             items,
             total_price: totalPrice,
