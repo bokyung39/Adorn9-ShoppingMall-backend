@@ -8,7 +8,7 @@ const orderRouter = require('./routes/orderRouter');
 const categoryRouter = require('./routes/categoryRouter');
 const errorHandler = require('./middlewares');
 const api = require('./routes/index.js')
-const { swaggerUi, specs } = require("../swagger/swagger")
+const { swaggerUi, specs } = require("./swagger/swagger")
 const passport = require('passport'); 
 const cookieParser = require('cookie-parser');
 
