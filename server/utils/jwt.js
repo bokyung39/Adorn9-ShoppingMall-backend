@@ -7,8 +7,11 @@ exports.setUserToken = (res, user) => {
 
   const tokenPayload = {
     userId: user.id,
+    email:user.email,
     userName: user.user_name,
-    isAdmin: user.admin // 사용자의 관리자 여부 정보를 토큰에 추가
+    isAdmin: user.admin,
+    passReset: user.password_reset
+    // 사용자의 관리자 여부 정보를 토큰에 추가
 };
 
   const token = jwt.sign(tokenPayload, secret);

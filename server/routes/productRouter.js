@@ -9,7 +9,10 @@ const router = Router();
 // 전체 상품 조회. 요청 URI : GET ~~/api/v1/products
 router.get('/', asyncHandler(async (req, res) => {
   const products = await productService.getProducts();
-
+/**
+    * #swagger.tags = ['products']
+    * #swagger.summary = '전체 상품 조오회'
+    */
   return res.status(200).json({
     status: 200,
     msg: "전체 상품 리스트",
@@ -20,6 +23,10 @@ router.get('/', asyncHandler(async (req, res) => {
 // 메인 페이지 상품 조회
 // 피드 이미지 8개
 router.get('/main/feeds', asyncHandler(async (req, res) => {
+  /**
+    * #swagger.tags = ['products']
+    * #swagger.summary = '메인 페이지 조회'
+    */
   const feeds = await productService.getfeeds();
   return res.status(200).json({
     status:200,
@@ -73,8 +80,11 @@ router.get('/categories', asyncHandler(async (req, res) => {
 
 // 특정 상품 조회. 요청 URI : GET ~~/api/v1/products/:상품id
 router.get('/:id', asyncHandler(async (req, res) => {
+/**
+    * #swagger.tags = ['products']
+    * #swagger.summary = '특정 상품 조오회'
+    */
   const productId = req.params.id;
-
   const product = await productService.getProductById(productId);
 
   return res.status(200).json({
@@ -86,8 +96,11 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 // 카테고리로 검색. 요청 URI : GET ~~/api/v1/products/category/necklace
 router.get('/categories/:categories', asyncHandler(async (req, res) => {
+/**
+    * #swagger.tags = ['products']
+    * #swagger.summary = '카테고리 검색으로 상품 조회'
+    */
   const name = req.params.categories;
-
   const categoryProducts = await productService.getCategoryProducts(name);
 
   return res.status(200).json({
@@ -114,6 +127,10 @@ router.post('/',
   authenticateTokenAdmin, 
   upload.single('image'), 
   asyncHandler( async (req, res) => {
+    /**
+    * #swagger.tags = ['products']
+    * #swagger.summary = '상품 등록'
+    */
     const result = await productService.addProduct(req, res);
 
     res.status(201).json({
