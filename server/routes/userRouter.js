@@ -126,14 +126,8 @@ router.post('/login', passport.authenticate('local', { session: false }), asyncH
     * #swagger.tags = ['User']
     * #swagger.summary = '로그인'
     */
-  setUserToken(res, req.user); 
-  console.log(req.user)
-  
-    res.status(200).json({
-      message: `${req.user.user_name}님 환영합니다.`,
-
-      
-    });
+  const response = setUserToken(res, req.user);
+  res.status(200).json(response);
 
 
 }));
