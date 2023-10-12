@@ -20,4 +20,5 @@ exports.setUserToken = (res, user) => {
   console.log(token);
     // 토큰을 쿠키로 전달
   res.cookie('token', token);
+  return token;
 };

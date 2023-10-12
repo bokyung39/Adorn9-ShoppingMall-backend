@@ -7,10 +7,11 @@ const userRouter = require('./routes/userRouter')
 const orderRouter = require('./routes/orderRouter');
 const categoryRouter = require('./routes/categoryRouter');
 const errorHandler = require('./middlewares');
-const api = require('./routes/index.js')
-const { swaggerUi, specs } = require("./swagger/swagger")
+// const { swaggerUi, specs } = require("./swagger/swagger")
 const passport = require('passport'); 
 const cookieParser = require('cookie-parser');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger/swagger.json')
 
 require('dotenv').config();
 
@@ -27,7 +28,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/api",api)
 app.use(passport.initialize());
 app.use(cookieParser());
 app.use('/api/v1/products', productRouter);
@@ -35,8 +35,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/categories', categoryRouter);
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { explorer: true }));
 app.use('/', (req,res) => {
     res.send('ok');
 });
