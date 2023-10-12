@@ -13,7 +13,6 @@ const { swaggerUi, specs } = require("./swagger")
 //const session = require('express-session');
 const passport = require('passport'); 
 const cookieParser = require('cookie-parser');
-
 require('dotenv').config();
 
 const MongoURL = process.env.MONGO_URL;

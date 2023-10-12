@@ -11,11 +11,10 @@ exports.setUserToken = (res, user) => {
     isAdmin: user.admin // 사용자의 관리자 여부 정보를 토큰에 추가
 };
 
-
-    // 유저 jwt 토큰생성
-  //const token = jwt.sign({ userId: user.id, userName: user.user_name }, secret);
   const token = jwt.sign(tokenPayload, secret);
   console.log(token);
-    // 토큰을 쿠키로 전달
-  res.cookie('token', token);
+  return {
+    message: '로그인 성공',
+    token: token
+  };
 };

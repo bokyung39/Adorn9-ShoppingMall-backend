@@ -15,17 +15,10 @@ hashpassword: $2b$08$AN10tp5cY4O6kdE4i8a9DukYylAs0O/hoC5.VwPVy2WMIOk4mogtK
 
 // 로그인
 router.post('/login', passport.authenticate('local', { session: false }), asyncHandler(async(req, res, next) => {
-  //throw{status:400, message:"throw"};
-  setUserToken(res, req.user);
-  //console.log(req.user);
-  try{
-    res.status(200).json({
-      message: '로그인 성공'
-    });
-  }catch(err){
-    error.status = 500;
-    next(error); 
-  }
+  const response = setUserToken(res, req.user);
+  res.status(200).json(response);
+
+
 }));
 
 // 구글 로그인
