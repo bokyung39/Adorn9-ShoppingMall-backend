@@ -14,7 +14,7 @@ exports.setUserToken = (res, user) => {
     // 사용자의 관리자 여부 정보를 토큰에 추가
 };
 
-  const token = jwt.sign(tokenPayload, secret);
+  const token = jwt.sign(tokenPayload, secret, { expiresIn: '1h' });
   console.log(token);
   return {
     message: '로그인 성공',

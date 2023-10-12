@@ -152,8 +152,6 @@ router.get('/logout', asyncHandler(async(req, res, next) => {
     * #swagger.summary = '로그아웃'
     */
   try{
-    // 쿠키를 삭제하기 위해 clearCookie() 메서드 사용
-    res.clearCookie('token'); // 'token'은 삭제하려는 쿠키의 이름
     return res.status(202).json({ message: '로그아웃 성공' });
   }
   catch(err){
