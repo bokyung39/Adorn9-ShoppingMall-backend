@@ -6,8 +6,8 @@ const { setUserToken } = require('../utils/jwt');
 const passport = require('passport'); 
 const loginRequired = require('../middlewares/login-required');
 const authenticateToken = require('../middlewares/authenticateToken');
+const authenticateTokenAdmin = require('../middlewares/authenticateTokenAdmin');
 const { User } = require('../models');
-const adminToken = require('../middlewares/adminToken')
 
 //회원가입
 
@@ -20,7 +20,7 @@ router.post('/joining',asyncHandler(async(req,res,next)=>{
   await userService.formCheck(userinfo);
 
   const newUser = await userService.userJoin(userinfo)
-
+  setUserToken(res, newUser);
   res.status(201).json({
     status:201,
     msg:`${user_name}님의 가입을 환영합니다.`,
@@ -100,18 +100,13 @@ router.post('/changing-password',authenticateToken,asyncHandler(async(req,res,ne
 
 //로그인
 router.post('/login', passport.authenticate('local', { session: false }), asyncHandler(async(req, res, next) => {
-  //throw{status:400, message:"throw"};
   setUserToken(res, req.user);
   console.log(req.user)
-  try{
+  
     res.status(200).json({
       message: `${req.user.user_name}님 환영합니다.`
       
     });
-  }catch(err){
-    error.status = 500;
-    next(error); 
-  }
 
 
 }));
@@ -127,11 +122,12 @@ router.get('/google/callback', passport.authenticate('google', { session: false 
 
 // 로그아웃
 router.get('/logout', asyncHandler(async(req, res, next) => {
-  try {
+  try{
     // 쿠키를 삭제하기 위해 clearCookie() 메서드 사용
     res.clearCookie('token'); // 'token'은 삭제하려는 쿠키의 이름
     return res.status(202).json({ message: '로그아웃 성공' });
-  } catch (error) {
+  }
+  catch(err){
     console.error('로그아웃 중 오류 발생:', error);
     //return res.status(500).json({ message: '로그아웃 중 오류가 발생했습니다.' });
     error.status = 500;

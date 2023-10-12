@@ -82,6 +82,7 @@ async resignUser(userinfo){
   
 }
 
+//관리자인지 체크
 async checkAdmin(userinfo){
   const {admin} = await User.findOne({email:userinfo})
   if(admin){return true}
@@ -104,11 +105,9 @@ async passwordReset(userinfo){
 async passwordChange(userinfo){
   const {email,password} = userinfo
   const hashedPassword = hashPassword(String(password))
-  console.log(hashedPassword)
   await User.updateOne({email},{password:hashedPassword,
-    password_rest:false})
+    password_reset:false})
     return;
-
 }
 
 
