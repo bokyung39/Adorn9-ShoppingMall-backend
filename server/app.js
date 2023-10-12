@@ -7,8 +7,8 @@ const userRouter = require('./routes/userRouter')
 const orderRouter = require('./routes/orderRouter');
 const categoryRouter = require('./routes/categoryRouter');
 const errorHandler = require('./middlewares');
-
-const { swaggerUi, specs } = require("./swagger")
+const api = require('./routes/index.js')
+const { swaggerUi, specs } = require("../swagger/swagger")
 const passport = require('passport'); 
 const cookieParser = require('cookie-parser');
 
@@ -27,6 +27,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use("/api",api)
 app.use(passport.initialize());
 app.use(cookieParser());
 app.use('/api/v1/products', productRouter);
