@@ -32,6 +32,9 @@ const OrderSchema = new Schema({
     receiver_name: {
         type: String
     },
+    receiver_phone_number: {
+        type: String
+    },
     address: {
         type: String,
         required: true,
