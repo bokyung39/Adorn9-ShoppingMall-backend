@@ -61,7 +61,8 @@ class UserService {
   
   //마이프로필
   async myProfile(userinfo){
-  const Profile = await User.findOne({email:userinfo})
+    const {email} = userinfo
+  const Profile = await User.findOne({email})
   if(!Profile){throw new Error('존재하지 않는 계정입니다.')}
     return Profile;
   }
@@ -81,8 +82,14 @@ async resignUser(userinfo){
   
 }
 
+//관리자인지 체크
+async checkAdmin(userinfo){
+  const {admin} = await User.findOne({email:userinfo})
+  if(admin){return true}
+  else {return false}
+}
 
-//비밀 번호 찾기
+//비밀번호 찾기
 async passwordReset(userinfo){
   const email = userinfo
   const password = generateRandomPassword();
@@ -91,8 +98,15 @@ async passwordReset(userinfo){
   await User.updateOne({email},{password:hashedPassword,
   password_reset:true})
   await sendMail(email, `비밀번호가 변경됐습니다.` , `변경된 비밀번호는 ${password}입니다.`)
-    // const goodbye = '비밀번호 변경 후 발송됐습니다.'
-    // return goodbye
+    return;
+}
+
+//비밀번호 찾기 후 반드시 해야하는 비밀번호 변경
+async passwordChange(userinfo){
+  const {email,password} = userinfo
+  const hashedPassword = hashPassword(String(password))
+  await User.updateOne({email},{password:hashedPassword,
+    password_reset:false})
     return;
 }
 

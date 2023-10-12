@@ -1,7 +1,7 @@
 function loginRequired(req,res,next){
   if(!req.user) {
+    console.log('로그인 해')
     res.redirect('/')
-    next(`로그인하셔야 합니다.`)
     return;
   }
 
