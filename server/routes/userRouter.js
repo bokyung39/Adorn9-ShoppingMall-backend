@@ -4,7 +4,6 @@ const {userService} = require('../services/userService')
 const router = Router();
 const { setUserToken } = require('../utils/jwt'); 
 const passport = require('passport'); 
-const loginRequired = require('../middlewares/login-required');
 const authenticateToken = require('../middlewares/authenticateToken');
 const authenticateTokenAdmin = require('../middlewares/authenticateTokenAdmin');
 const { User } = require('../models');
