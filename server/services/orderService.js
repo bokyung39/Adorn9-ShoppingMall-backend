@@ -122,7 +122,7 @@ class OrderService {
     }
 
     // 주문 수정 (회원)
-    async updateOrder(userId, orderId, name, items, address, phoneNumber) {
+    async updateOrder(userId, orderId, receiverName, receiverPhoneNumber, items, address) {
         const order = await this.Order.findOne({ _id: orderId, user_id: userId });
 
         if (!order) {
