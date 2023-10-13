@@ -93,12 +93,7 @@ class OrderService {
     // 회원 ID(고유번호)로 주문 목록 조회
     async getOrdersByUserId(userId) {
         const orders = await this.Order.find({ user_id: userId });
-        if (orders.length === 0) {
-            throw new Error(JSON.stringify({
-                status: 404,
-                message: '주문 내역이 없습니다'
-            }));
-        }
+
         return orders;
     }
 
