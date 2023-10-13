@@ -18,7 +18,7 @@ class UserService {
   if(!passRE.test(password)&&password!=undefined){
     throw new Error('비밀번호 작성 양식을 준수해주세요.')
   }//비밀번호는 8~16자에 알파벳,숫자,특수문자가 하나씩 포함돼야함
-  if(!phoneRE.test(phone_number)&&phone_number!=undefined){
+  if(!phoneRE.test(phone_number)&&phone_number!=undefined&&phone_number!=""){
     throw new Error('올바른 전화번호를 입력해주세요.')
   }//전화번호는 -를 뺀 00000000000 형로 제한
   
@@ -47,12 +47,10 @@ class UserService {
     if(!user){throw new Error(`없는 계정입니다.`)}
     
     const hashedPassword = hashPassword(password)
-   await User.updateOne({email},{
-      user_name:user_name,
-      password:hashedPassword,
-      phone_number:phone_number
-    })
-
+    if(user_name!=null||user_name!=""){await User.updateOne({email},{password:hashedPassword})}
+    if(password!=null||password!=""){await User.updateOne({email},{user_name:user_name})}
+    if(phone_number!=null||phone_number!=""){await User.updateOne({email},{phone_number:phone_number})}
+     
   }
   
   //마이프로필
