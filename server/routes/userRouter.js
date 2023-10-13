@@ -65,7 +65,7 @@ router.get('/profile',authenticateToken, asyncHandler(async(req,res,next)=>{
     * #swagger.tags = ['User']
     * #swagger.summary = '회원 수정'
     */
-    const email = req.query.email;
+    const email = req.user.email;
     const {password,user_name,phone_number} =req.body;
     const userinfo = {email,password,user_name,phone_number}
     const admin = req.user.email
@@ -73,10 +73,10 @@ router.get('/profile',authenticateToken, asyncHandler(async(req,res,next)=>{
   
     if(email == req.user.email||await userService.checkAdmin(admin))
      {
-    await userService.formCheck(userinfo);
-    const updatedUser = await userService.userUpdate(userinfo)
+        await userService.formCheck(userinfo);
+        await userService.userUpdate(userinfo);
     
-    res.status(200).json({status:200, msg:'개인정보가 수정됐습니다.'})
+        res.status(200).json({status:200, msg:'개인정보가 수정됐습니다.'})
      }
      else{throw new Error(`수정 권한이 없습니다.`)}
   }))
@@ -152,8 +152,6 @@ router.get('/logout', asyncHandler(async(req, res, next) => {
     * #swagger.summary = '로그아웃'
     */
   try{
-    // 쿠키를 삭제하기 위해 clearCookie() 메서드 사용
-    res.clearCookie('token'); // 'token'은 삭제하려는 쿠키의 이름
     return res.status(202).json({ message: '로그아웃 성공' });
   }
   catch(err){
