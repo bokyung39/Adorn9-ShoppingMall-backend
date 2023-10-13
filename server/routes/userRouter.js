@@ -51,8 +51,7 @@ router.get('/profile',authenticateToken, asyncHandler(async(req,res,next)=>{
     msg:`${Profile.user_name}님의 개인 정보입니다.`,
     email:Profile.email,
     name:Profile.user_name,
-    phone_number:Profile.phone_number,
-    order_list:Profile.order_list
+    phone_number:Profile.phone_number
   })}
   else {throw new Error('조회 권한이 없습니다.')} 
   
@@ -67,6 +66,7 @@ router.get('/profile',authenticateToken, asyncHandler(async(req,res,next)=>{
     */
     const email = req.query.email;
     const {password,user_name,phone_number} =req.body;
+    console.log(req.body.phone_number)
     const userinfo = {email,password,user_name,phone_number}
     const admin = req.user.email
     console.log(req.user)
@@ -93,32 +93,32 @@ router.delete('/withdraw', asyncHandler(async(req,res,next)=>{
   res.status(200).json({status:200, msg:`${goodbye_user.user_name}님의 탈퇴가 완료됐습니다.`})
 }))
 
-//비밀번호 찾기
-router.post('/reset-password', asyncHandler(async(req,res,next)=>{
-  /**
-    * #swagger.tags = ['User']
-    * #swagger.summary = '비밀번호 찾기'
-    */
-  const {email} = req.body;
-  const user = await User.findOne({email})
-  if(!user) {throw new Error('등록된 계정이 아닙니다.')}
-  const goodbye = await userService.passwordReset(email)
-  res.status(200).send({status:200, msg:'변경된 비밀번호를 이메일로 발송했습니다.'})
-}))
+// //비밀번호 찾기
+// router.post('/reset-password', asyncHandler(async(req,res,next)=>{
+//   /**
+//     * #swagger.tags = ['User']
+//     * #swagger.summary = '비밀번호 찾기'
+//     */
+//   const {email} = req.body;
+//   const user = await User.findOne({email})
+//   if(!user) {throw new Error('등록된 계정이 아닙니다.')}
+//   const goodbye = await userService.passwordReset(email)
+//   res.status(200).send({status:200, msg:'변경된 비밀번호를 이메일로 발송했습니다.'})
+// }))
 
-//비밀번호 변경
-router.post('/changing-password',authenticateToken,asyncHandler(async(req,res,next)=>{
-  /**
-    * #swagger.tags = ['User']
-    * #swagger.summary = '비밀번호 변경(비밀번호 찾기한 계정만)'
-    */
-  if(req.user.passwordReset==false){return res.redirect('/modify')}
-  const email = req.user.email;
-  const password = req.body;
-  const userinfo = {email,password}
-  await userService.passwordChange(userinfo)
-  res.status(200).send({status:200, msg:`비밀번호가 성공적으로 변경됐습니다.`})
-}))
+// //비밀번호 변경
+// router.post('/changing-password',authenticateToken,asyncHandler(async(req,res,next)=>{
+//   /**
+//     * #swagger.tags = ['User']
+//     * #swagger.summary = '비밀번호 변경(비밀번호 찾기한 계정만)'
+//     */
+//   if(req.user.passwordReset==false){return res.redirect('/modify')}
+//   const email = req.user.email;
+//   const password = req.body;
+//   const userinfo = {email,password}
+//   await userService.passwordChange(userinfo)
+//   res.status(200).send({status:200, msg:`비밀번호가 성공적으로 변경됐습니다.`})
+// }))
 
 //로그인
 router.post('/login', passport.authenticate('local', { session: false }), asyncHandler(async(req, res, next) => {
