@@ -65,7 +65,7 @@ router.get('/profile',authenticateToken, asyncHandler(async(req,res,next)=>{
     * #swagger.tags = ['User']
     * #swagger.summary = '회원 수정'
     */
-    const email = req.query.email;
+    const email = req.user.email;
     const {password,user_name,phone_number} =req.body;
     const userinfo = {email,password,user_name,phone_number}
     const admin = req.user.email
@@ -73,10 +73,10 @@ router.get('/profile',authenticateToken, asyncHandler(async(req,res,next)=>{
   
     if(email == req.user.email||await userService.checkAdmin(admin))
      {
-    await userService.formCheck(userinfo);
-    const updatedUser = await userService.userUpdate(userinfo)
+        await userService.formCheck(userinfo);
+        await userService.userUpdate(userinfo);
     
-    res.status(200).json({status:200, msg:'개인정보가 수정됐습니다.'})
+        res.status(200).json({status:200, msg:'개인정보가 수정됐습니다.'})
      }
      else{throw new Error(`수정 권한이 없습니다.`)}
   }))
