@@ -27,10 +27,10 @@ const UserSchema = new Schema({
     type:Boolean,
     default:false
    },//관리자 여부. 기본값은 그냥 회원
-   password_reset:{
-    type:Boolean,
-    deafult:false
-   },
+  //  password_reset:{
+  //   type:Boolean,
+  //   deafult:false
+  //  },
   order_list: [{ type: Schema.Types.ObjectId, ref: "Order" }], //유저 주문내역
 })
 

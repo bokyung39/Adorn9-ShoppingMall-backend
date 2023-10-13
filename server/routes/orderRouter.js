@@ -84,8 +84,8 @@ router.get('/', authenticateToken, asyncHandler(async (req, res) => {
 router.put('/:orderId', authenticateToken, asyncHandler(async (req, res) => {
     const userId = req.user.userId; // 로그인한 사용자의 ID
     const orderId = req.params.orderId;
-    const { receiverName, receiverPhoneNumber, items, address } = req.body;
-    const updatedOrder = await orderService.updateOrder(userId, orderId, receiverName, receiverPhoneNumber, items, address);
+    const { name, items, address, phoneNumber, receiverName, receiverPhoneNumber } = req.body;
+    const updatedOrder = await orderService.updateOrder(userId, orderId, name, items, address, phoneNumber, receiverName, receiverPhoneNumber);
     res.status(200).json({
         status: 200,
         msg: `주문번호 ${orderId} 수정 완료되었습니다`,
