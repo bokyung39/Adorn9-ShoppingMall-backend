@@ -18,6 +18,7 @@ exports.setUserToken = (res, user) => {
   console.log(token);
   return {
     message: '로그인 성공',
-    token: token
+    token: token,
+    email:user.email
   };
 };
