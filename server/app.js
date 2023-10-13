@@ -34,7 +34,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/categories', categoryRouter);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { explorer: true }));
+app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { explorer: true }));
 app.use('/', (req,res) => {
     res.send('ok');
 });
