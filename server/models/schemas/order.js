@@ -33,15 +33,15 @@ const OrderSchema = new Schema({
     },
     receiver_name: {
         type: String,
-        required: true,
+        //required: true,
     },
     receiver_phone_number: {
         type: String,
-        required: true,
+        //required: true,
     },
     address: {
         type: String,
-        required: true,
+        //required: true
     },
     payment: {
         type: String
