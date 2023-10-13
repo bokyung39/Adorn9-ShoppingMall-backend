@@ -14,3 +14,4 @@ function authenticateTokenAdmin(req, res, next) {
 }
 
 module.exports = authenticateTokenAdmin;
+

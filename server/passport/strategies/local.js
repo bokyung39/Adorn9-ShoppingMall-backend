@@ -5,7 +5,6 @@ const hashPassword = require('../../utils/hash-password');
 //로그인 유효성 검사
 const check = (email, password) => {
   const emailRE = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-  const passRE = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/
 
   //email은 @과 .을 포함
   if(!emailRE.test(email)){
@@ -13,7 +12,7 @@ const check = (email, password) => {
   } 
   
   //비밀번호는 알파벳, 숫자, 특수문자가 모두 포함된 8~16자
-  if(!passRE.test(password)){
+  if(password.length<8){
     throw new Error('비밀번호 작성 양식을 준수해주세요.')
   }
 }

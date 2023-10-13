@@ -1,7 +1,7 @@
 const {User,Order} =require('../models')
 const hashPassword = require('../utils/hash-password')
-const generateRandomPassword = require('../utils/generate-random-password')
-const sendMail = require('../utils/send-mail')
+// const generateRandomPassword = require('../utils/generate-random-password')
+// const sendMail = require('../utils/send-mail')
 
 class UserService {
 
@@ -12,17 +12,13 @@ class UserService {
 
     const {password,email,phone_number} = userinfo
   const passRE = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/
-  const emailRE = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
   const phoneRE = /^\d{11}$/
   
  
-  if(!passRE.test(password)){
+  if(!passRE.test(password)&&password!=undefined){
     throw new Error('비밀번호 작성 양식을 준수해주세요.')
   }//비밀번호는 8~16자에 알파벳,숫자,특수문자가 하나씩 포함돼야함
-  if(!emailRE.test(email)){
-    throw new Error('올바른 이메일을 입력해주세요.')
-  }//email은 알파벳과 숫자의 갯수는 상관없지만 @과 .을 사이에 두는 일반적인 형태로 제한
-  if(!(phoneRE.test(phone_number))){
+  if(!phoneRE.test(phone_number)&&phone_number!=undefined&&phone_number!=""){
     throw new Error('올바른 전화번호를 입력해주세요.')
   }//전화번호는 -를 뺀 00000000000 형로 제한
   
@@ -51,17 +47,16 @@ class UserService {
     if(!user){throw new Error(`없는 계정입니다.`)}
     
     const hashedPassword = hashPassword(password)
-   await User.updateOne({email},{
-      user_name:user_name,
-      password:hashedPassword,
-      phone_number:phone_number
-    })
-
+    if(user_name!=null||user_name!=""){await User.updateOne({email},{password:hashedPassword})}
+    if(password!=null||password!=""){await User.updateOne({email},{user_name:user_name})}
+    if(phone_number!=null||phone_number!=""){await User.updateOne({email},{phone_number:phone_number})}
+     
   }
   
   //마이프로필
   async myProfile(userinfo){
-  const Profile = await User.findOne({email:userinfo})
+    const {email} = userinfo
+  const Profile = await User.findOne({email})
   if(!Profile){throw new Error('존재하지 않는 계정입니다.')}
     return Profile;
   }
@@ -81,20 +76,33 @@ async resignUser(userinfo){
   
 }
 
-
-//비밀 번호 찾기
-async passwordReset(userinfo){
-  const email = userinfo
-  const password = generateRandomPassword();
-  const hashedPassword = hashPassword(password)
-
-  await User.updateOne({email},{password:hashedPassword,
-  password_reset:true})
-  await sendMail(email, `비밀번호가 변경됐습니다.` , `변경된 비밀번호는 ${password}입니다.`)
-    // const goodbye = '비밀번호 변경 후 발송됐습니다.'
-    // return goodbye
-    return;
+//관리자인지 체크
+async checkAdmin(userinfo){
+  const {admin} = await User.findOne({email:userinfo})
+  if(admin){return true}
+  else {return false}
 }
+
+// //비밀번호 찾기
+// async passwordReset(userinfo){
+//   const email = userinfo
+//   const password = generateRandomPassword();
+//   const hashedPassword = hashPassword(password)
+
+//   await User.updateOne({email},{password:hashedPassword,
+//   password_reset:true})
+//   await sendMail(email, `비밀번호가 변경됐습니다.` , `변경된 비밀번호는 ${password}입니다.`)
+//     return;
+// }
+
+// //비밀번호 찾기 후 반드시 해야하는 비밀번호 변경
+// async passwordChange(userinfo){
+//   const {email,password} = userinfo
+//   const hashedPassword = hashPassword(String(password))
+//   await User.updateOne({email},{password:hashedPassword,
+//     password_reset:false})
+//     return;
+// }
 
 
 
