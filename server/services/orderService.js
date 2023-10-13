@@ -14,25 +14,33 @@ class OrderService {
     // 주문 저장 - 배송비 포함을 boolean으로 체크해야?
     // name, phoneNumber, email, receiver_name, address, items
     async saveOrder(name, phoneNumber, email, receiverName, receiverPhoneNumber, payment, address, items, totalPrice) {
-        // let totalPrice = 0;
-        // for(const obj of items){
-        //     const objPrice = await Product.findOne({name:obj.item});
-        //     const itemPrice = Number(obj.quantity) * Number(objPrice.get('price'));
-        //     totalPrice = totalPrice + Number(itemPrice);
-        // }
+        totalPrice = 0;
+        let updatedItems = [];
+
+        for(const obj of items){
+            const objInfo = await Product.findOne({name:obj.item});
+            const itemPrice = Number(obj.quantity) * Number(objInfo.get('price'));
+            updatedItems.push({
+                item: obj.item,
+                quantity: obj.quantity,
+                price: objInfo.get('price')*Number(obj.quantity),
+                item_img: objInfo.get('images'),
+            });
+            totalPrice = totalPrice + Number(itemPrice);
+        }
 
         const orderedUser = await User.findOne({ phone_number: phoneNumber });
 
         const order = await Order.create({
             user_id: orderedUser? orderedUser._id : null,
-            name,
-            phone_number: phoneNumber,
-            email,
+            name: orderedUser? orderedUser.user_name : null,
+            phone_number: orderedUser? orderedUser.phone_number : null,
+            email: orderedUser? orderedUser.email : null,
             receiver_name: receiverName,
             receiver_phone_number: receiverPhoneNumber,
             payment,
             address,
-            items,
+            items: updatedItems,
             total_price: totalPrice,
             status: this.statusEnum.ITEM_READY,
         });
