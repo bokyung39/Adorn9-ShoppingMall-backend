@@ -47,12 +47,10 @@ class UserService {
     if(!user){throw new Error(`없는 계정입니다.`)}
     
     const hashedPassword = hashPassword(password)
-   await User.updateOne({email},{
-      user_name:user_name,
-      password:hashedPassword,
-      phone_number:phone_number
-    })
-
+    if(user_name!=null){await User.updateOne({email},{password:hashedPassword})}
+    if(password!=null){await User.updateOne({email},{user_name:user_name})}
+    if(phone_number!=null){await User.updateOne({email},{phone_number:phone_number})}
+     
   }
   
   //마이프로필
