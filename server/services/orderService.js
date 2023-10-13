@@ -13,13 +13,13 @@ class OrderService {
 
     // 주문 저장 - 배송비 포함을 boolean으로 체크해야?
     // name, phoneNumber, email, receiver_name, address, items
-    async saveOrder(name, phoneNumber, email, receiverName, address, items) {
-        let totalPrice = 0;
-        for(const obj of items){
-            const objPrice = await Product.findOne({name:obj.item});
-            const itemPrice = Number(obj.quantity) * Number(objPrice.get('price'));
-            totalPrice = totalPrice + Number(itemPrice);
-        }
+    async saveOrder(name, phoneNumber, email, receiverName, receiverPhoneNumber, payment, address, items, totalPrice) {
+        // let totalPrice = 0;
+        // for(const obj of items){
+        //     const objPrice = await Product.findOne({name:obj.item});
+        //     const itemPrice = Number(obj.quantity) * Number(objPrice.get('price'));
+        //     totalPrice = totalPrice + Number(itemPrice);
+        // }
 
         const orderedUser = await User.findOne({ phone_number: phoneNumber });
 
@@ -29,6 +29,8 @@ class OrderService {
             phone_number: phoneNumber,
             email,
             receiver_name: receiverName,
+            receiver_phone_number: receiverPhoneNumber,
+            payment,
             address,
             items,
             total_price: totalPrice,
@@ -71,10 +73,10 @@ class OrderService {
                 status: 404,
                 message: '해당하는 주문이 없습니다'
             }));
-        }else if(order.status !== "상품준비중"){
+        }else if(order.status !== this.statusEnum.ITEM_READY){
             throw new Error(JSON.stringify({
                 status: 403,
-                message: '배송준비중 이후부터는 주문 취소가 불가능합니다. 관리자에게 문의해주세요'
+                message: `${order.status}인 주문은 취소가 불가능합니다.`
             }));
         }
         await Order.deleteOne({ _id : orderId });
@@ -83,6 +85,12 @@ class OrderService {
     // 회원 ID(고유번호)로 주문 목록 조회
     async getOrdersByUserId(userId) {
         const orders = await this.Order.find({ user_id: userId });
+        if (orders.length === 0) {
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '주문 내역이 없습니다'
+            }));
+        }
         return orders;
     }
 
@@ -96,6 +104,12 @@ class OrderService {
     // 모든 주문 내역
     async getAllOrders() {
         const orders = await this.Order.find();
+        if (orders.length === 0) {
+            throw new Error(JSON.stringify({
+                status: 404,
+                message: '주문 내역이 없습니다'
+            }));
+        }
         return orders;
     }
 
@@ -106,14 +120,14 @@ class OrderService {
         if (!order) {
             throw new Error(JSON.stringify({
                 status: 404,
-                message: '해당하는 주문이 없습니다',
+                message: '잘못된 주문번호입니다'
             }));
         }
 
-        if (order.status !== "상품준비중") {
+        if (order.status !== this.statusEnum.ITEM_READY) {
             throw new Error(JSON.stringify({
                 status: 403,
-                message: '이미 배송이 시작된 주문은 수정할 수 없습니다',
+                message: `${order.status}인 주문은 수정이 불가능합니다.`,
             }));
         }
 
@@ -148,18 +162,6 @@ class OrderService {
 
         await this.Order.deleteOne({ _id: orderId });
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 const orderService = new OrderService(Order);
