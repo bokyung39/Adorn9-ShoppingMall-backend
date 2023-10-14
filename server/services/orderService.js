@@ -33,7 +33,7 @@ class OrderService {
 
         const order = await Order.create({
             user_id: orderedUser? orderedUser._id : null,
-            name: orderedUser? orderedUser.user_name : null,
+            name,
             phone_number: orderedUser? orderedUser.phone_number : null,
             email: orderedUser? orderedUser.email : null,
             receiver_name: receiverName,
