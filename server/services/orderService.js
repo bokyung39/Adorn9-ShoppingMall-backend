@@ -124,7 +124,7 @@ class OrderService {
     // 주문 수정 (회원)
     async updateOrder(userId, orderId, name, items, address, phoneNumber, receiverName, receiverPhoneNumber) {
         const order = await this.Order.findOne({ _id: orderId, user_id: userId });
-
+        console.log(order);
         if (!order) {
             throw new Error(JSON.stringify({
                 status: 404,
@@ -141,12 +141,13 @@ class OrderService {
 
         // 수정 내역 정보 업데이트
         order.name = name;
-        order.items = items;
+        //order.items = items;
         order.address = address;
         order.phone_number = phoneNumber;
         order.receiver_name = receiverName;
         order.receiver_phone_number = receiverPhoneNumber;
-
+        console.log(items);
+        
         // 업데이트된 주문 정보 저장, 반환
         return order.save();
     }
